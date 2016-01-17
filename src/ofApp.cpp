@@ -8,7 +8,7 @@ vector<Vec4i> lines; // Storing the Hough lines
 Mat threshBin, img; // cv-style binary image
 
 void ofApp::setup() {
-  image.loadImage("image.jpg");
+  image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
 
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
   convertColor(image, thresh, CV_RGB2GRAY);
@@ -21,22 +21,21 @@ void ofApp::setup() {
   threshBin = toCv(thresh);
 
   // Apply the Hough Lines transform
-  HoughLinesP(threshBin, lines, 1, CV_PI/180, 50, 50, 10);
+  HoughLinesP(threshBin, lines, 1, CV_PI/180, 150, 25, 200);
 
   img = toCv(image); // Convert OF image to CV bin representation
 
   for( size_t i = 0; i < lines.size(); i++ ) {
     Vec4i l = lines[i];
-    cv::line( img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), Scalar(0, 0, 255), 3, CV_AA);
+    cv::line( img, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), Scalar(255, 0, 0), 1, CV_AA);
   }
-
 }
 
-void ofApp::update() {}
+void ofApp::update() {
+  image.update();
+}
 
 void ofApp::draw() {
-
-  image.update();
   image.draw(0, 0);
 }
 
