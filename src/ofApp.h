@@ -13,9 +13,4 @@ public:
   
   ofImage image;
   ofImage thresh;
-  float tVal;
-
-  ofxCv::ContourFinder contourFinder;
-  ofxCv::TrackingColorMode tcm;
-  ofColor targetColor;
 };
