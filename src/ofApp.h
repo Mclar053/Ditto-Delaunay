@@ -13,4 +13,6 @@ public:
   
   ofImage image;
   ofImage thresh;
+
+  bool doSegsIntersect(ofPolyline a, ofPolyline b);
 };
