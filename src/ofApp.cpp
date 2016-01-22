@@ -1,10 +1,11 @@
 #include "ofApp.h"
-#include <math.h>
+#include "ofxIntersection.h"
 
 using namespace ofxCv;
 using namespace cv;
 
 vector<Vec2f> lines; // Storing the Hough lines
+vector<IsLine> cartCoord; // Storing the cartesian representations of lines
 Mat threshBin, img; // cv-style binary image
 
 void ofApp::setup() {
@@ -37,7 +38,11 @@ void ofApp::setup() {
      pt2.y = cvRound(y0 - 1000*(a));
      line( img, pt1, pt2, Scalar(255,0,0), 1, CV_AA);
 
-     cout << lines[i] << endl;
+     // Cache the cartesian representations in vector storage
+     IsLine cartLine(ofPoint(pt1.x, pt1.y, 0), ofPoint(pt2.x, pt2.y, 0));
+     cartCoord.push_back(cartLine);
+
+     cout << cartCoord[i].getVec() << endl;
   }
 }
 
@@ -47,6 +52,9 @@ void ofApp::update() {
 
 void ofApp::draw() {
   image.draw(0, 0);
+  for(auto line : cartCoord) {
+    line.draw();
+  }
 }
 
 void ofApp::mousePressed(int x, int y, int button) {}
