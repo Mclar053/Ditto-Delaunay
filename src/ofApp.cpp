@@ -1,80 +1,12 @@
 #include "ofApp.h"
-#include "SweepLine.h"
-#include "main.h"
-#include "bintree.h"
 
 using namespace ofxCv;
 using namespace cv;
 
 vector<Vec2f> lines; // Storing the Hough lines
 vector<ofPolyline> cartCoord; // Storing the cartesian representations of lines
+vector<ofPoint> iPts; // Stores the points of intersection with Hough Lines
 Mat threshBin, img; // cv-style binary image
-
-static set<PointSL*> outpoints;
-vector<SLseg*> segmenty;
-
-// Functionality to compute the segments
-class SweepLine;
-void get_intersections( vector<SLseg*> segmenty, set<PointSL*> *outp) {
-  EventQueue  Eq(segmenty);
-  SweepLine  *SL = new SweepLine();
-  Event      *e;  /* current event */
-  SLseg      *s;  /* current segment sweepline-u */
-
-  /* go through all events, it's either lavy top, right top or intersection */
-  while (e = Eq.next()) {
-    switch (e->type) {
-      case LEFT:
-        {
-          /* add to sweep-lines */
-          s = SL->add(e);
-          if (s) {
-            if (s->above) {
-              SL->intersect(s->above, s, &Eq);
-            }
-
-            if (s->below) {
-              SL->intersect(s, s->below, &Eq);
-            }
-          }
-          break;
-        }
-      case RIGHT:
-        {
-          /* taken from sweep-lines */
-          s = SL->find(e);
-          if (s) {
-            SLseg *tempa;
-            SLseg *tempb;
-            tempa = s->above;
-            tempb = s->below;
-            SL->remove(s);
-            if (tempa && tempb) {
-              SL->intersect(tempa, tempb, &Eq);
-            }
-          }
-          break;
-        }
-      case INTERSECTION:
-        {
-          outp->insert(e->eV);
-
-          /* the point where it therefore to one another upper and lower */
-          SLseg *tmp = e->intersectUpper->above;
-          e->intersectUpper->above = e->intersectLower;
-          e->intersectLower->above = tmp;
-          e->intersectUpper->below = e->intersectLower->below;
-          e->intersectLower->below = e->intersectUpper;
-          tmp = NULL;
-
-          /* to rearrange the segments adjacent to the intersection */
-          SL->intersect(e->intersectLower->above, e->intersectLower, &Eq);
-          SL->intersect(e->intersectUpper->below, e->intersectUpper, &Eq);
-          break;
-        }
-    }
-  }
-}
 
 void ofApp::setup() {
   // image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
@@ -95,9 +27,6 @@ void ofApp::setup() {
 
   img = toCv(image); // Convert OF image to CV bin representation
 
-  segmenty.clear();
-  outpoints.clear();
-
   for( int i = 0; i < lines.size(); i++ ) {
      float rho = lines[i][0], theta = lines[i][1];
      cv::Point pt1, pt2;
@@ -116,12 +45,16 @@ void ofApp::setup() {
      tmp.addVertex( ofPoint(pt2.x, pt2.y, 0) );
      tmp.close();
 
-     segmenty.push_back(new SLseg( new PointSL(pt1.x, pt1.y), new PointSL(pt2.x, pt2.y)));
      cartCoord.push_back(tmp);
   }
 
-  // compute the intersection Hough Lines
-  get_intersections(segmenty, &outpoints);
+  // Check for line intersection via brute force
+  for(auto l1 : cartCoord) {
+    for(auto l2 : cartCoord) {
+      doSegsIntersect(l1, l2);
+    }
+  }
+
 }
 
 void ofApp::update() {
@@ -130,11 +63,50 @@ void ofApp::update() {
 
 void ofApp::draw() {
   image.draw(0, 0);
-  for(auto line : cartCoord) {
-    ofColor(255);
-    ofFill();
-    line.draw();
+  // for(auto line : cartCoord) {
+  //   ofColor(255);
+  //   ofFill();
+  //   line.draw();
+  // }
+  for(auto pt : iPts) {
+    ofCircle(pt.x, pt.y, 2);
   }
+}
+
+bool ofApp::doSegsIntersect(ofPolyline a, ofPolyline b) {
+  /*
+   * Function loosely based on answers from: http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+   */
+  vector<ofPoint> aLine = a.getVertices();
+  vector<ofPoint> bLine = b.getVertices();
+
+  float a0x = aLine[0].x;
+  float a0y = aLine[0].y;
+  float a1x = aLine[1].x;
+  float a1y = aLine[1].y;
+
+  float b0x = bLine[0].x;
+  float b0y = bLine[0].y;
+  float b1x = bLine[1].x;
+  float b1y = bLine[1].y;
+
+  float s1x = a1x - a0x;
+  float s1y = a1y - a0y;
+  float s2x = b1x - b0x;
+  float s2y = b1y - b0y;
+
+  float s, t;
+  s = (-s1y * (a0x - b0x) + s1x * (a0y - b0y)) / (-s2x * s1y + s1x * s2y);
+  t = ( s2x * (a0y - b0y) - s2y * (a0x - b0x)) / (-s2x * s1y + s1x * s2y);
+
+  // If a collision has been detected
+  if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+    iPts.push_back( ofPoint(a0x + (t * s1x), a0y + (t * s1y)) );
+    return 1;
+  }
+
+  return 0; // No collision
+
 }
 
 void ofApp::mousePressed(int x, int y, int button) {}
