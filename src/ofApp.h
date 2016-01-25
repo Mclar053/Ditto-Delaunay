@@ -14,5 +14,8 @@ public:
   ofImage image;
   ofImage thresh;
 
+  vector<ofPolyline> cartCoord; // Storing the cartesian representations of lines
+  vector<ofPoint> iPts;
+
   bool doSegsIntersect(ofPolyline a, ofPolyline b);
 };

@@ -4,13 +4,11 @@ using namespace ofxCv;
 using namespace cv;
 
 vector<Vec2f> lines; // Storing the Hough lines
-vector<ofPolyline> cartCoord; // Storing the cartesian representations of lines
-vector<ofPoint> iPts; // Stores the points of intersection with Hough Lines
 Mat threshBin, img; // cv-style binary image
 
 void ofApp::setup() {
-  // image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  image.loadImage("http://static.dezeen.com/uploads/2008/02/squareparabola03.jpg");
+  image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
+  // image.loadImage("http://static.dezeen.com/uploads/2008/02/squareparabola03.jpg");
 
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
   convertColor(image, thresh, CV_RGB2GRAY);
@@ -63,18 +61,22 @@ void ofApp::update() {
 
 void ofApp::draw() {
   image.draw(0, 0);
-  // for(auto line : cartCoord) {
-  //   ofColor(255);
-  //   ofFill();
-  //   line.draw();
-  // }
-  for(auto pt : iPts) {
+
+  for(auto const &pt : iPts) {
     ofCircle(pt.x, pt.y, 2);
   }
 }
 
+/**
+ * Checks whether or not there is an intersection been two non-infinite line segments.
+
+ *  @param ofPolyline a - the first line to compare
+ *  @param ofPolyline b - the second line to compare
+ *
+ *  @return bool - whether or not there was any points of intersection.
+ */
 bool ofApp::doSegsIntersect(ofPolyline a, ofPolyline b) {
-  /*
+  /**
    * Function loosely based on answers from: http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
    */
   vector<ofPoint> aLine = a.getVertices();
@@ -101,7 +103,13 @@ bool ofApp::doSegsIntersect(ofPolyline a, ofPolyline b) {
 
   // If a collision has been detected
   if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-    iPts.push_back( ofPoint(a0x + (t * s1x), a0y + (t * s1y)) );
+    float x = a0x + (t * s1x);
+    float y = a0y + (t * s1y);
+
+    // ensure the point is contained within the circle
+    if (x <= image.getWidth() && y <= image.getHeight())
+      iPts.push_back( ofPoint(x, y) );
+    
     return 1;
   }
 
