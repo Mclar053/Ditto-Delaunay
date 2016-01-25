@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    //Simple shape comparison test
     Shape s = Shape();
     Shape t = Shape();
     float an1, an2, an3;

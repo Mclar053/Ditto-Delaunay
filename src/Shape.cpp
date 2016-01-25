@@ -14,38 +14,53 @@ Shape::Shape(){
     vertices.push_back(ofVec2f(45,45));
 }
 
-/*
- 
-*/
-
+//Returns the number of vertices the shape has
 int Shape::getVertexSize(){
     return vertices.size();
 }
 
+//Checks if the has been compared
 bool Shape::isCompared(){
     return compared;
 }
 
+/*
+ Compares the the current shape's angles with another shape's angles to see if they are similar.
+ 
+ Order of operations:
+ 1/-Ensures that both shapes have the same number of vertices.
+ 2/-Creates temporary angle vectors to contain both shapes angles
+ 3/-Loops through each of the angles of the current shape compares against each of the angles in the other angle array.
+ 4/-If the angles which are being compared are within 5 degrees of each other. Those angles are removed from their respective vectors and breaks the current loop to move onto the next angle.
+ 5/-If none of the angles are similar for any angle then the function will return false.
+ 6/-The function will return true once all elements of the temporary angle arrays are empty.
+*/
 bool Shape::compare(Shape _shape){
+    //1/-
     if(getVertexSize()==_shape.getVertexSize()){
+        //2/-
         vector<float> angles, otherAngles;
         angles = getAngleArray();
         otherAngles = _shape.getAngleArray();
         
+        //3/-
         for(int i=0; i<angles.size(); i++){
             for(int j=0; j<otherAngles.size(); j++){
+                //4/-
                 if(abs(angles[i]-otherAngles[j])<5){
                     angles.erase(angles.begin()+i);
                     otherAngles.erase(angles.begin()+j);
                     break;
                 }
                 else{
+                    //5/-
                     if(j==otherAngles.size()-1){
                         return false;
                     }
                 }
             }
         }
+        //6/-
         return true;
     }
     else{
@@ -53,10 +68,15 @@ bool Shape::compare(Shape _shape){
     }
 }
 
+//Sets a vertex at a particular point (Used only for testing)
 void Shape::setVertex(int i, float x, float y){
     vertices[i]= ofVec2f(x,y);
 }
 
+/*
+ Creates a vector of floats
+ For each vertex, add to vector each angle at those vertices
+*/
 vector<float> Shape::getAngleArray(){
     vector<float> angles;
     for(int i=0; i<vertices.size(); i++){
@@ -65,6 +85,7 @@ vector<float> Shape::getAngleArray(){
     return angles;
 }
 
+//Dot product to get return angle
 float Shape::getAngle(int i){
     int prev,next;
     if(i==0) prev= vertices.size()-1;
