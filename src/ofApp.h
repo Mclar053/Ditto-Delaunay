@@ -1,21 +1,25 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxCv.h"
+#include "Shape.h"
 
-class ofApp : public ofBaseApp {
-public:
-  void setup();
-  void update();
-  void draw();
-  void mousePressed(int x, int y, int button);
-  void keyPressed(int key);
-  
-  ofImage image;
-  ofImage thresh;
+class ofApp : public ofBaseApp{
 
-  vector<ofPolyline> cartCoord; // Storing the cartesian representations of lines
-  vector<ofPoint> iPts;
+	public:
+		void setup();
+		void update();
+		void draw();
 
-  bool doSegsIntersect(ofPolyline a, ofPolyline b);
+		void keyPressed(int key);
+		void keyReleased(int key);
+		void mouseMoved(int x, int y );
+		void mouseDragged(int x, int y, int button);
+		void mousePressed(int x, int y, int button);
+		void mouseReleased(int x, int y, int button);
+		void mouseEntered(int x, int y);
+		void mouseExited(int x, int y);
+		void windowResized(int w, int h);
+		void dragEvent(ofDragInfo dragInfo);
+		void gotMessage(ofMessage msg);
+		
 };
