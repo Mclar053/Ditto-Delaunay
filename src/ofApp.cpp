@@ -1,14 +1,18 @@
 #include "ofApp.h"
+#include "segment.h"
 
 using namespace ofxCv;
 using namespace cv;
 
 vector<Vec2f> lines; // Storing the Hough lines
+vector<Segment> segments;
 Mat threshBin, img; // cv-style binary image
+ofImage imgCopy; // copy of the imange without the Hough Lines
 
 void ofApp::setup() {
-  image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  // image.loadImage("http://static.dezeen.com/uploads/2008/02/squareparabola03.jpg");
+  // image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
+  image.loadImage("http://static.dezeen.com/uploads/2008/02/squareparabola03.jpg");
+  imgCopy = image;
 
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
   convertColor(image, thresh, CV_RGB2GRAY);
@@ -53,6 +57,30 @@ void ofApp::setup() {
     }
   }
 
+  cout << iPts.size() << endl;
+
+  for(auto const &pt : iPts) {
+    for(auto const &pt2 : iPts) {
+      if(abs(pt2.x - pt.x) > 75 &&
+         abs(pt2.x - pt.x) < image.getWidth() / 2 &&
+         abs(pt2.y - pt.y) > 75 &&
+         abs(pt2.y - pt.y) < image.getWidth() / 2
+        ) {
+          ofImage tmp;
+          ofRectangle imgSpace = ofRectangle(pt, pt2);
+
+          tmp.cropFrom(imgCopy, pt.x, pt.y, imgSpace.width, imgSpace.height);
+
+          Segment seg(tmp);
+          segments.push_back(seg);
+      }
+    }
+  }
+
+  for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
+    seg.exportSegment();
+  } );
+
 }
 
 void ofApp::update() {
@@ -62,8 +90,24 @@ void ofApp::update() {
 void ofApp::draw() {
   image.draw(0, 0);
 
+  // Draw the points of intersection
+  // given a reasonable threshold
   for(auto const &pt : iPts) {
     ofCircle(pt.x, pt.y, 2);
+
+    for(auto const &pt2 : iPts) {
+      if(abs(pt2.x - pt.x) > 75 &&
+         abs(pt2.x - pt.x) < image.getWidth() / 3 &&
+         abs(pt2.y - pt.y) > 75 &&
+         abs(pt2.y - pt.y) < image.getWidth() / 3
+        ) {
+          ofImage tmp;
+          ofRectangle imgSpace = ofRectangle(pt, pt2);
+
+          ofNoFill();
+          ofDrawRectangle(imgSpace);
+      }
+    }
   }
 }
 
@@ -106,9 +150,30 @@ bool ofApp::doSegsIntersect(ofPolyline a, ofPolyline b) {
     float x = a0x + (t * s1x);
     float y = a0y + (t * s1y);
 
-    // ensure the point is contained within the circle
-    if (x <= image.getWidth() && y <= image.getHeight())
-      iPts.push_back( ofPoint(x, y) );
+    // ensure the point is contained within the boundaries of the image
+    // and also not off the screen
+    if (x <= image.getWidth() &&
+        y <= image.getHeight() &&
+        x > 0 &&
+        y > 0) {
+
+      bool unique = true;
+
+      /**
+       * Check to see if there's already an intersection point close by.
+       * If there are points within a 7px difference
+       */
+      for( auto pt : iPts ) {
+        if( abs(pt.x - x) < 15 && abs(pt.y - y) < 15 ) {
+          unique = false;
+          break;
+        }
+      }
+
+      // only push the point if there aren't multiples
+      if (unique)
+        iPts.push_back( ofPoint(x, y) );
+    }
     
     return 1;
   }
