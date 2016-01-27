@@ -14,13 +14,14 @@
 
 class Segment {
   private:
-    static int count;
+    static int count; // Global count of objects createdd
 
     bool exportSegments();
-    const int cCount;
-    ofImage imgSeg;
+    const int cCount; // local cache of global segment count
+    ofImage imgSeg; // the image data in ofImage format
+    ofPoint topLeft; // location of the segment in the original image
 
   public:
-    Segment(ofImage imgData);
+    Segment(ofImage _imgSeg, ofPoint _topLeft);
     void exportSegment();
 };

@@ -10,7 +10,7 @@
 
 #include "segment.h"
 
-Segment::Segment(ofImage imgData): imgSeg(imgData), cCount(count++) {}
+Segment::Segment(ofImage _imgSeg, ofPoint _topLeft): imgSeg(_imgSeg), topLeft(_topLeft), cCount(count++) {}
 
 int Segment::count = 0;
 

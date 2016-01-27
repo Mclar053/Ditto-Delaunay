@@ -11,7 +11,7 @@ ofImage imgCopy; // copy of the imange without the Hough Lines
 
 void ofApp::setup() {
   // image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  image.loadImage("http://static.dezeen.com/uploads/2008/02/squareparabola03.jpg");
+  image.loadImage("long.jpg");
   imgCopy = image;
 
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
@@ -25,7 +25,7 @@ void ofApp::setup() {
   threshBin = toCv(thresh);
 
   // Apply the Hough Lines transform
-  HoughLines(threshBin, lines, 1, CV_PI/180, 125, 0, 0);
+  HoughLines(threshBin, lines, 1, CV_PI/180, 175, 0, 0);
 
   img = toCv(image); // Convert OF image to CV bin representation
 
@@ -71,15 +71,15 @@ void ofApp::setup() {
 
           tmp.cropFrom(imgCopy, pt.x, pt.y, imgSpace.width, imgSpace.height);
 
-          Segment seg(tmp);
+          Segment seg(tmp, pt);
           segments.push_back(seg);
       }
     }
   }
 
-  for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
-    seg.exportSegment();
-  } );
+   for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
+     seg.exportSegment();
+   } );
 
 }
 
@@ -97,9 +97,9 @@ void ofApp::draw() {
 
     for(auto const &pt2 : iPts) {
       if(abs(pt2.x - pt.x) > 75 &&
-         abs(pt2.x - pt.x) < image.getWidth() / 3 &&
+         abs(pt2.x - pt.x) < image.getWidth() / 2 &&
          abs(pt2.y - pt.y) > 75 &&
-         abs(pt2.y - pt.y) < image.getWidth() / 3
+         abs(pt2.y - pt.y) < image.getWidth() / 2
         ) {
           ofImage tmp;
           ofRectangle imgSpace = ofRectangle(pt, pt2);
