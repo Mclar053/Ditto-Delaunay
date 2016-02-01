@@ -10,8 +10,7 @@ Mat threshBin, img; // cv-style binary image
 ofImage imgCopy; // copy of the imange without the Hough Lines
 
 void ofApp::setup() {
-  // image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  image.loadImage("long.jpg");
+  image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
   imgCopy = image;
 
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
@@ -57,19 +56,23 @@ void ofApp::setup() {
     }
   }
 
+  /*
+   * FOR DEBUG MODE ONLY
+   * Determines the number of points of intersection
+   */
   cout << iPts.size() << endl;
 
   for(auto const &pt : iPts) {
     for(auto const &pt2 : iPts) {
       if(abs(pt2.x - pt.x) > 75 &&
-         abs(pt2.x - pt.x) < image.getWidth() / 2 &&
+         abs(pt2.x - pt.x) < image.getWidth() / 1.5 &&
          abs(pt2.y - pt.y) > 75 &&
-         abs(pt2.y - pt.y) < image.getWidth() / 2
+         abs(pt2.y - pt.y) < image.getWidth() / 1.5
         ) {
           ofImage tmp;
           ofRectangle imgSpace = ofRectangle(pt, pt2);
 
-          tmp.cropFrom(imgCopy, pt.x, pt.y, imgSpace.width, imgSpace.height);
+          tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
           Segment seg(tmp, pt);
           segments.push_back(seg);
@@ -77,9 +80,9 @@ void ofApp::setup() {
     }
   }
 
-   for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
-     seg.exportSegment();
-   } );
+  for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
+   seg.exportSegment();
+  } );
 
 }
 
@@ -97,9 +100,9 @@ void ofApp::draw() {
 
     for(auto const &pt2 : iPts) {
       if(abs(pt2.x - pt.x) > 75 &&
-         abs(pt2.x - pt.x) < image.getWidth() / 2 &&
+         abs(pt2.x - pt.x) < image.getWidth() / 1.5 &&
          abs(pt2.y - pt.y) > 75 &&
-         abs(pt2.y - pt.y) < image.getWidth() / 2
+         abs(pt2.y - pt.y) < image.getWidth() / 1.5
         ) {
           ofImage tmp;
           ofRectangle imgSpace = ofRectangle(pt, pt2);
