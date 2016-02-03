@@ -69,12 +69,14 @@ void ofApp::setup() {
          abs(pt2.y - pt.y) > 75 &&
          abs(pt2.y - pt.y) < image.getWidth() / 1.5
         ) {
-          ofImage tmp;
+          ofImage tmp, tmpH;
           ofRectangle imgSpace = ofRectangle(pt, pt2);
 
-          tmp.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
+          // create object from the two version of the image
+          tmpH.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
+          tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
-          Segment seg(tmp, pt);
+          Segment seg(tmpH, tmp, pt);
           segments.push_back(seg);
       }
     }

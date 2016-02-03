@@ -10,7 +10,7 @@
 
 #include "segment.h"
 
-Segment::Segment(ofImage _imgSeg, ofPoint _topLeft): imgSeg(_imgSeg), topLeft(_topLeft), cCount(count++) {}
+Segment::Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft): imgSegH(_imgSegH), imgSeg(_imgSeg), topLeft(_topLeft), cCount(count++) {}
 
 int Segment::count = 0;
 
@@ -28,13 +28,15 @@ void Segment::removeBackground() {
 
   int yVal; // stores the y val of the hough line intersection found
 
-  unsigned char * pix = imgSeg.getPixels(); // Pointer to the start of the pixel buffer
+  unsigned char * pix = imgSeg.getPixels(); // Pointer to the start of the pixel buffer for output img
+  unsigned char * houghPix = imgSegH.getPixels(); // Pointer to the start of the pixel buffer for pic with hough lines
+
   for( int i=0; i<dim; i++ ) {
     int loc = i * 3;
 
-    int r = pix[loc];
-    int g = pix[loc+1];
-    int b = pix[loc+2];
+    int r = houghPix[loc];
+    int g = houghPix[loc+1];
+    int b = houghPix[loc+2];
 
     /*
      * DETECT VERTICAL HOUGH LINE
@@ -45,7 +47,7 @@ void Segment::removeBackground() {
      * pixelDif() - If pixel before and after it are adaquately different
      * loc < dim*3-2 - Ensure we aren't getting out of upper bounds of pointer
      */
-      if (loc > 1 && r >= 230 && pixelDif(pix[loc-4], pix[loc+8]) && loc < dim*3-2)
+      if (loc > 3 && r >= 230 && pixelDif(pix[loc-4], pix[loc+8]) && loc < dim*3-2)
         yVal = i / w;
 
       // Catch the remaining pixels after a genuine HL intersection, on the same line
