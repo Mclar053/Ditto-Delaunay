@@ -23,5 +23,7 @@ class Segment {
 
   public:
     Segment(ofImage _imgSeg, ofPoint _topLeft);
+    void removeBackground();
+    bool pixelDif(int pix1, int pix2);
     void exportSegment();
 };

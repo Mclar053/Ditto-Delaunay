@@ -37,7 +37,7 @@ void ofApp::setup() {
      pt1.y = cvRound(y0 + 1000*(a));
      pt2.x = cvRound(x0 - 1000*(-b));
      pt2.y = cvRound(y0 - 1000*(a));
-     line( img, pt1, pt2, Scalar(255,0,0), 1, CV_AA);
+     line( img, pt1, pt2, Scalar(255,0,0), 0.1, CV_AA);
 
      // Cache the cartesian representations in vector storage
      ofPolyline tmp;
@@ -72,7 +72,7 @@ void ofApp::setup() {
           ofImage tmp;
           ofRectangle imgSpace = ofRectangle(pt, pt2);
 
-          tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
+          tmp.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
           Segment seg(tmp, pt);
           segments.push_back(seg);
@@ -81,7 +81,7 @@ void ofApp::setup() {
   }
 
   for_each( segments.begin(), segments.end(), [] ( Segment &seg ) {
-   seg.exportSegment();
+    seg.exportSegment();
   } );
 
 }
