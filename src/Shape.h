@@ -22,6 +22,7 @@ public:
     float getAngle(int i);
     vector<float> getAngleArray();
     bool compare(Shape _shape);
+    void checkRotation(Shape _shape);
     
     void setVertex(int i, float x, float y);
     

@@ -87,15 +87,20 @@ vector<float> Shape::getAngleArray(){
 
 //Dot product to get return angle
 float Shape::getAngle(int i){
+    //Checks next and previous vertices to ensure that program doesn't choose a vertex that is out of bounds to the vertices vector
     int prev,next;
     if(i==0) prev= vertices.size()-1;
     else prev=i-1;
     if(i==vertices.size()) next= 0;
     else next=i+1;
     
+    //Creates mathematical vectors between the vertex
     ofVec2f vectorOne = vertices[i]-vertices[prev];
     ofVec2f vectorTwo = vertices[i]-vertices[next];
     
+    //Calculates angle between the two mathematical vectors
     float theta = acos((vectorOne.x*vectorTwo.x+vectorOne.y*vectorTwo.y)/(vectorOne.length()*vectorTwo.length()));
+
+    //Returns angle in degrees rather than radians
     return theta*180/PI;
 }
