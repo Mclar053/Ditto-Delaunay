@@ -13,7 +13,8 @@ void ofApp::setup(){
     
     float tot = an1+an2+an3;
     
-    t.setVertex(2, 90, 90);
+//    t.setVertex(2, 90, 90); //True
+    t.setVertex(2, 60, 90); //False
     
     cout<<"s angles:"<<s.getAngle(0)<<", "<<s.getAngle(1)<<", "<<s.getAngle(2)<<endl;
     cout<<"t angles:"<<t.getAngle(0)<<", "<<t.getAngle(1)<<", "<<t.getAngle(2)<<endl;

@@ -94,7 +94,7 @@ bool Shape::compareAngle(Shape _shape){
                 if(angles[i]!=otherAngles[nextPos]){
                     _flipped = true;
                 }
-                if(i==angles.size()){
+                if(i==angles.size()-1){
                     return true;
                 }
             }
@@ -108,7 +108,7 @@ bool Shape::compareAngle(Shape _shape){
                             return false;
                         }
                     }
-                    if(i==angles.size()){
+                    if(i==angles.size()-1){
                         return true;
                     }
                 }
