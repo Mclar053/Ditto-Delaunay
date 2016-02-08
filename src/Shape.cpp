@@ -35,7 +35,7 @@ bool Shape::isCompared(){
  5/-If none of the angles are similar for any angle then the function will return false.
  6/-The function will return true once all elements of the temporary angle arrays are empty.
 */
-bool Shape::compare(Shape _shape){
+bool Shape::compareAngleNoOrder(Shape _shape){
     //1/-
     if(getVertexSize()==_shape.getVertexSize()){
         //2/-
@@ -62,6 +62,59 @@ bool Shape::compare(Shape _shape){
         }
         //6/-
         return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Shape::compareAngle(Shape _shape){
+    //1/-
+    if(getVertexSize()==_shape.getVertexSize()){
+        //2/-
+        vector<float> angles, otherAngles;
+        angles = getAngleArray();
+        otherAngles = _shape.getAngleArray();
+        
+        //3/-
+        vector<int> firstVertexPos;
+        for(int i=0; i<otherAngles.size(); i++){
+            if(angles[0]==otherAngles[i]) firstVertexPos.push_back(i);
+        }
+        
+        //4/-
+        bool _flipped;
+        int nextPos;
+        
+        while(firstVertexPos.size()!=0){
+            _flipped = false;
+            
+            for(int i=1; i<angles.size(); i++){
+                nextPos = (firstVertexPos[0]+i)%otherAngles.size();
+                if(angles[i]!=otherAngles[nextPos]){
+                    _flipped = true;
+                }
+                if(i==angles.size()){
+                    return true;
+                }
+            }
+            
+            if(_flipped){
+                for(int i=1; i<angles.size(); i++){
+                    nextPos = (firstVertexPos[0]-i)%otherAngles.size();
+                    if(angles[i]!=otherAngles[nextPos]){
+                        firstVertexPos.erase(firstVertexPos.begin());
+                        if(firstVertexPos.size()==0){
+                            return false;
+                        }
+                    }
+                    if(i==angles.size()){
+                        return true;
+                    }
+                }
+            }
+        }
+        
     }
     else{
         return false;

@@ -13,16 +13,22 @@
 #include <stdio.h>
 class Shape{
     bool compared;
+    bool flipped;
     vector<ofVec2f> vertices;
 public:
     Shape();
     
     int getVertexSize();
     bool isCompared();
+    bool isFlipped();
     float getAngle(int i);
     vector<float> getAngleArray();
-    bool compare(Shape _shape);
-    void checkRotation(Shape _shape);
+    bool compareAngleNoOrder(Shape _shape); //Checks shape angles in no particular order
+    bool compareAngle(Shape _shape);
+    
+    
+    float getSizeRatio(Shape _shape);
+    float checkRotation(Shape _shape);
     
     void setVertex(int i, float x, float y);
     

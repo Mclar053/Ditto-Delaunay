@@ -19,7 +19,7 @@ void ofApp::setup(){
     cout<<"t angles:"<<t.getAngle(0)<<", "<<t.getAngle(1)<<", "<<t.getAngle(2)<<endl;
     
     
-    if(s.compare(t)){
+    if(s.compareAngle(t)){
         cout<<"True"<<endl;
     } else{
         cout<<"False"<<endl;
