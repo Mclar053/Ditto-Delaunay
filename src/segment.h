@@ -21,6 +21,7 @@ class Segment {
     ofImage imgSeg; // the image data in ofImage format
     ofImage imgSegH; // ditto ^ but for hough lines
     vector<ofPoint> edges; // stores the location of segment edges
+    int h, w; // image width and height
 
     void removeBackground();
     bool exportSegments();
@@ -29,4 +30,5 @@ class Segment {
     Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft);
     void exportSegment();
     bool pixelDif(int r1, int g1, int b1, int r2, int g2, int b2, int diff);
+    void addVertex(int i, int row); // Declare a pixel a vertex of the shape
 };

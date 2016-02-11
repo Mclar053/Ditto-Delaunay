@@ -24,12 +24,14 @@ void Segment::exportSegment() {
 }
 
 void Segment::removeBackground() {
-  int w = imgSeg.getWidth();
-  int h = imgSeg.getHeight();
+  w = imgSeg.getWidth();
+  h = imgSeg.getHeight();
   int dim = w * h;
 
   int yValDelete = -1; // stores the y val of the hough line intersection found
+  int yValDeleteRef = -1; // stores the last itteration to detect an edge
   int yValIgnore = -1; // stores the y val of a found horizontal hough line to ignore
+  bool firstPoint = false; // check to see whether first vertex has been added.
 
   unsigned char * pix = imgSeg.getPixels(); // Pointer to the start of the pixel buffer for output img
   unsigned char * houghPix = imgSegH.getPixels(); // Pointer to the start of the pixel buffer for the image with hough lines
@@ -85,12 +87,16 @@ void Segment::removeBackground() {
         (i + 1) / w == row &&
         (i - 1) / w == row &&
         pixelDif(pix[loc-3], pix[loc-2], pix[loc-1], pix[loc+3], pix[loc+4], pix[loc+5], 15)) {
+        if(!firstPoint) addVertex(i, row); // Add the first edge
         yValDelete = row;
+        yValDeleteRef = i;
       } // End vertical check
 
     }
 
   }
+
+  addVertex(yValDeleteRef, yValDelete); // Add the last detected edge post-loop
 
   imgSeg.update();
 }
@@ -108,4 +114,16 @@ bool Segment::pixelDif(int r1, int g1, int b1, int r2, int g2, int b2, int diff)
   float b = abs(b1-b2);
 
   return (r + g + b) / 3 > diff;
+}
+
+/**
+ * ADD VERTEX
+ * Used to map an index of the array to a point in of space
+ *
+ * @param int i - the position in the pixel pointer array
+ * @param int row - the y value of the pixel in of terms
+ */
+void Segment::addVertex(int i, int row) {
+  int x = (i%w)+1;
+  edges.push_back(ofPoint(x, row));
 }
