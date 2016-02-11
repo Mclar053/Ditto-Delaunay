@@ -13,6 +13,9 @@ void ofApp::setup() {
   image.loadImage("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
   imgCopy = image;
 
+  // Enable alpha pngs
+  ofEnableAlphaBlending();
+
   thresh.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_GRAYSCALE);
   convertColor(image, thresh, CV_RGB2GRAY);
   

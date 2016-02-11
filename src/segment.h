@@ -20,6 +20,7 @@ class Segment {
     const ofPoint topLeft; // location of the segment in the original image
     ofImage imgSeg; // the image data in ofImage format
     ofImage imgSegH; // ditto ^ but for hough lines
+    vector<ofPoint> edges; // stores the location of segment edges
 
     void removeBackground();
     bool exportSegments();
@@ -27,5 +28,5 @@ class Segment {
   public:
     Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft);
     void exportSegment();
-    bool pixelDif(int r1, int g1, int b1, int r2, int g2, int b2);
+    bool pixelDif(int r1, int g1, int b1, int r2, int g2, int b2, int diff);
 };
