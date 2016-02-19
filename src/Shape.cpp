@@ -84,7 +84,6 @@ bool Shape::compareAngle(Shape _shape){
         }
         
         //4/-
-        bool _flipped;
         
         for(int _vertex : firstVertexPos){
             if(checkAnglePos(angles, otherAngles, _vertex,1)){
@@ -95,45 +94,6 @@ bool Shape::compareAngle(Shape _shape){
             }
         }
         return false;
-        
-        
-        
-        
-        
-        
-//        while(firstVertexPos.size()!=0){
-//            _flipped = false;
-//            
-//            for(int i=1; i<angles.size(); i++){
-//                nextPos = (firstVertexPos[0]+i)%-otherAngles.size();
-//                cout<<nextPos<<"--"<<endl;
-//                if(angles[i]!=otherAngles[nextPos]){
-//                    _flipped = true;
-//                }
-//                if(i==angles.size()-1){
-//                    return true;
-//                }
-//            }
-//            
-//            if(_flipped){
-//                for(int i=1; i<angles.size(); i++){
-//                    nextPos = (firstVertexPos[0]-i)%-otherAngles.size();
-//                    cout<<nextPos<<endl;
-//                    if(angles[i]!=otherAngles[nextPos]){
-//                        firstVertexPos.erase(firstVertexPos.begin());
-//                        if(firstVertexPos.size()==0){
-//                            return false;
-//                        }
-//                    }
-//                    if(i==angles.size()-1){
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-        
-//        return false;
-        
     }
     else{
         return false;
