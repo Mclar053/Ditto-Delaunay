@@ -12,7 +12,7 @@ Shape::Shape(){
     vertices.push_back(ofVec2f(0,0));
     vertices.push_back(ofVec2f(90,0));
     vertices.push_back(ofVec2f(90,90));
-    vertices.push_back(ofVec2f(0,90));
+//    vertices.push_back(ofVec2f(0,90));
 }
 
 //Returns the number of vertices the shape has
