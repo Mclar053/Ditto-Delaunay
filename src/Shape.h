@@ -26,6 +26,8 @@ public:
     bool compareAngleNoOrder(Shape _shape); //Checks shape angles in no particular order
     bool compareAngle(Shape _shape);
     
+    bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos,int multiplier);
+    
     
     float getSizeRatio(Shape _shape);
     float checkRotation(Shape _shape);

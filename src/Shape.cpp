@@ -11,7 +11,8 @@
 Shape::Shape(){
     vertices.push_back(ofVec2f(0,0));
     vertices.push_back(ofVec2f(90,0));
-    vertices.push_back(ofVec2f(45,45));
+    vertices.push_back(ofVec2f(90,90));
+    vertices.push_back(ofVec2f(0,90));
 }
 
 //Returns the number of vertices the shape has
@@ -84,41 +85,70 @@ bool Shape::compareAngle(Shape _shape){
         
         //4/-
         bool _flipped;
-        int nextPos;
         
-        while(firstVertexPos.size()!=0){
-            _flipped = false;
-            
-            for(int i=1; i<angles.size(); i++){
-                nextPos = (firstVertexPos[0]+i)%otherAngles.size();
-                if(angles[i]!=otherAngles[nextPos]){
-                    _flipped = true;
-                }
-                if(i==angles.size()-1){
-                    return true;
-                }
+        for(int _vertex : firstVertexPos){
+            if(checkAnglePos(angles, otherAngles, _vertex,1)){
+                return true;
             }
-            
-            if(_flipped){
-                for(int i=1; i<angles.size(); i++){
-                    nextPos = (firstVertexPos[0]-i)%otherAngles.size();
-                    if(angles[i]!=otherAngles[nextPos]){
-                        firstVertexPos.erase(firstVertexPos.begin());
-                        if(firstVertexPos.size()==0){
-                            return false;
-                        }
-                    }
-                    if(i==angles.size()-1){
-                        return true;
-                    }
-                }
+            if(checkAnglePos(angles, otherAngles, _vertex,-1)){
+                return true;
             }
         }
+        return false;
+        
+        
+        
+        
+        
+        
+//        while(firstVertexPos.size()!=0){
+//            _flipped = false;
+//            
+//            for(int i=1; i<angles.size(); i++){
+//                nextPos = (firstVertexPos[0]+i)%-otherAngles.size();
+//                cout<<nextPos<<"--"<<endl;
+//                if(angles[i]!=otherAngles[nextPos]){
+//                    _flipped = true;
+//                }
+//                if(i==angles.size()-1){
+//                    return true;
+//                }
+//            }
+//            
+//            if(_flipped){
+//                for(int i=1; i<angles.size(); i++){
+//                    nextPos = (firstVertexPos[0]-i)%-otherAngles.size();
+//                    cout<<nextPos<<endl;
+//                    if(angles[i]!=otherAngles[nextPos]){
+//                        firstVertexPos.erase(firstVertexPos.begin());
+//                        if(firstVertexPos.size()==0){
+//                            return false;
+//                        }
+//                    }
+//                    if(i==angles.size()-1){
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+        
+//        return false;
         
     }
     else{
         return false;
     }
+}
+
+bool Shape::checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier){
+    int nextPos;
+    for(int i=1; i<angles.size(); i++){
+        nextPos = (firstPos+(i*multiplier))%-(otherAngles.size());
+        if(angles[i]!=otherAngles[nextPos]){
+            return false;
+        }
+    }
+    return true;
 }
 
 //Sets a vertex at a particular point (Used only for testing)

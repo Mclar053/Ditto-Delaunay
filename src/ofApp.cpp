@@ -14,10 +14,19 @@ void ofApp::setup(){
     float tot = an1+an2+an3;
     
 //    t.setVertex(2, 90, 90); //True
-    t.setVertex(2, 60, 90); //False
+    t.setVertex(3, 60, 90); //False
     
-    cout<<"s angles:"<<s.getAngle(0)<<", "<<s.getAngle(1)<<", "<<s.getAngle(2)<<endl;
-    cout<<"t angles:"<<t.getAngle(0)<<", "<<t.getAngle(1)<<", "<<t.getAngle(2)<<endl;
+    cout<<"s angles"<<endl;
+    for(int i=0; i<s.getVertexSize(); i++){
+        cout<<"Angle "<<i<<": "<<s.getAngle(i)<<endl;
+    }
+    
+    cout<<"---------------"<<endl<<"t angles"<<endl;
+    for(int i=0; i<t.getVertexSize(); i++){
+        cout<<"Angle "<<i<<": "<<t.getAngle(i)<<endl;
+    }
+//    cout<<"s angles:"<<s.getAngle(0)<<", "<<s.getAngle(1)<<", "<<s.getAngle(2)<<endl;
+//    cout<<"t angles:"<<t.getAngle(0)<<", "<<t.getAngle(1)<<", "<<t.getAngle(2)<<endl;
     
     
     if(s.compareAngle(t)){
