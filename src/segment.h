@@ -22,6 +22,7 @@ class Segment {
     ofImage imgSegH; // ditto ^ but for hough lines
     vector<ofPoint> edges; // stores the location of segment edges
     int h, w; // image width and height
+    int imageNo; // Image index, used for folder number.
 
     void removeBackground();
     bool exportSegments();
