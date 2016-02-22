@@ -19,6 +19,7 @@
 		6AABAB39E82AF5CFEA23A205 /* ContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB4A8427353AED09174BE5 /* ContourFinder.cpp */; };
 		6E26E46F1C7B6C7600D36AF5 /* segment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E26E46B1C7B6C7600D36AF5 /* segment.cpp */; };
 		6E26E4701C7B6C7600D36AF5 /* Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E26E46D1C7B6C7600D36AF5 /* Shape.cpp */; };
+		6E26E4761C7B748C00D36AF5 /* architecture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E26E4741C7B748C00D36AF5 /* architecture.cpp */; };
 		7CDAD32BE4FA46701E3552C7 /* RunningBackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CBF6AED6A17AC0C17F63CC4 /* RunningBackground.cpp */; };
 		A6668C5B1272D7FCD5B5A16F /* Utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6CEC50DB3D06414010233963 /* Utilities.cpp */; };
 		B6840996567E78436F7ECFAB /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B047FF96258DC01792B272DB /* ETF.cpp */; };
@@ -142,6 +143,8 @@
 		6E26E46C1C7B6C7600D36AF5 /* segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = segment.h; sourceTree = "<group>"; };
 		6E26E46D1C7B6C7600D36AF5 /* Shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shape.cpp; sourceTree = "<group>"; };
 		6E26E46E1C7B6C7600D36AF5 /* Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shape.h; sourceTree = "<group>"; };
+		6E26E4741C7B748C00D36AF5 /* architecture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = architecture.cpp; sourceTree = "<group>"; };
+		6E26E4751C7B748C00D36AF5 /* architecture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = architecture.h; sourceTree = "<group>"; };
 		70046E043EDDB466ED625C3B /* Tracker.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Tracker.h; path = ../../../addons/ofxCv/libs/ofxCv/include/ofxCv/Tracker.h; sourceTree = SOURCE_ROOT; };
 		7101CF2125B8B2BF46AA2662 /* cxcore.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = cxcore.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv/cxcore.hpp; sourceTree = SOURCE_ROOT; };
 		71C98C3F44D63B39F1482A54 /* background_segm.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = background_segm.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/video/background_segm.hpp; sourceTree = SOURCE_ROOT; };
@@ -821,6 +824,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				6E26E4741C7B748C00D36AF5 /* architecture.cpp */,
+				6E26E4751C7B748C00D36AF5 /* architecture.h */,
 				6E26E46B1C7B6C7600D36AF5 /* segment.cpp */,
 				6E26E46C1C7B6C7600D36AF5 /* segment.h */,
 				6E26E46D1C7B6C7600D36AF5 /* Shape.cpp */,
@@ -962,6 +967,7 @@
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				250A95BA26587BE85DB0A353 /* ofxCvColorImage.cpp in Sources */,
 				1D5F3298C2FA073628012944 /* ofxCvContourFinder.cpp in Sources */,
+				6E26E4761C7B748C00D36AF5 /* architecture.cpp in Sources */,
 				169D3C72FDE6C5590A1616F5 /* ofxCvFloatImage.cpp in Sources */,
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,
 				E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */,
