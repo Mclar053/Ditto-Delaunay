@@ -10,14 +10,14 @@
 
 #include "segment.h"
 
-Segment::Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft): imgSegH(_imgSegH), imgSeg(_imgSeg), topLeft(_topLeft), cCount(count++) {}
+Segment::Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft, int _imageNo): imgSegH(_imgSegH), imgSeg(_imgSeg), topLeft(_topLeft), imageNo(_imageNo), cCount(segCount++) {}
 
-int Segment::count = 0;
+int Segment::segCount = 0;
 
 void Segment::exportSegment() {
   removeBackground();
-  string name = "seg/segment" + to_string(cCount) + "-new.png";
-  string houghName = "seg/segment" + to_string(cCount) + "-hough.png";
+  string name = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-new.png";
+  string houghName = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-hough.png";
   
   imgSeg.save(name, OF_IMAGE_QUALITY_BEST);
   imgSegH.save(houghName, OF_IMAGE_QUALITY_BEST);

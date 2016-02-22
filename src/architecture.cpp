@@ -12,12 +12,14 @@
 using namespace ofxCv;
 using namespace cv;
 
+int Architecture::arcCount = 0;
+
 /**
  *  Creates an instance of 'Architecture' and kicks off the segmentation.
  *  
  *  @param string _image - The string to load into the ofImage.
  */
-Architecture::Architecture(string _image) {
+Architecture::Architecture(string _image): cCount(arcCount++) {
   image.load(_image);
   imgCopy = image;
 
@@ -84,7 +86,7 @@ Architecture::Architecture(string _image) {
           tmpH.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
           tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
-          Segment seg(tmpH, tmp, pt);
+          Segment seg(tmpH, tmp, pt, cCount );
           segments.push_back(seg);
       }
     }

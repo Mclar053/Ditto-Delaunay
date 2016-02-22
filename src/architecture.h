@@ -18,6 +18,9 @@ using namespace cv;
 
 class Architecture {
   private:
+    static int arcCount; // Global count of objects created
+
+    const int cCount; // local cache of global architecture count
     ofImage image;
     ofImage thresh;
 
