@@ -14,4 +14,5 @@ public:
 
   vector<string> arguments;
   vector<Architecture> images;
+  int toDisplay = 0;
 };

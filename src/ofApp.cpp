@@ -13,9 +13,19 @@ void ofApp::setup() {
 void ofApp::update() {};
 
 void ofApp::draw() {
-  images.at(0).drawImage();
+  if(arguments.size() > 0) {
+    images.at(toDisplay).drawImage();
+  } else {
+    exit();
+  }
 }
 
 void ofApp::mousePressed(int x, int y, int button) {}
 
-void ofApp::keyPressed(int key) {}
+void ofApp::keyPressed(int key) {
+  if(toDisplay < images.size()-1) {
+    toDisplay ++;
+  } else {
+    toDisplay = 0;
+  }
+}
