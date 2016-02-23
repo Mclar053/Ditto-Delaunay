@@ -4,9 +4,10 @@ using namespace ofxCv;
 using namespace cv;
 
 void ofApp::setup() {
-  Architecture img = Architecture("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-
-  images.push_back(img);
+  for( int i=1; i<arguments.size(); i++ ) {
+    Architecture temp(arguments.at(i));
+    images.push_back(temp);
+  }
 }
 
 void ofApp::update() {};

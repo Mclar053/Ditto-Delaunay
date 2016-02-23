@@ -12,5 +12,6 @@ public:
   void mousePressed(int x, int y, int button);
   void keyPressed(int key);
 
+  vector<string> arguments;
   vector<Architecture> images;
 };
