@@ -19,7 +19,7 @@ int Architecture::arcCount = 0;
  *  
  *  @param string _image - The string to load into the ofImage.
  */
-Architecture::Architecture(string _image): cCount(arcCount++) {
+Architecture::Architecture(string _image, int _threshold): cCount(arcCount++), threshold(_threshold) {
   image.load(_image);
   imgCopy = image;
 
@@ -33,10 +33,10 @@ Architecture::Architecture(string _image): cCount(arcCount++) {
   // Map the OF image data to a cv-style binary data
   threshBin = toCv(thresh);
 
-  // Apply the Hough Lines transform
-  HoughLines(threshBin, lines, 1, CV_PI/180, 175, 0, 0);
-
   img = toCv(image); // Convert OF image to CV bin representation
+
+  // Apply the Hough Lines transform
+  HoughLines(threshBin, lines, 1, CV_PI/180, threshold, 0, 0);
 
   cout << "Performing Hough lines segmentation..." << endl;
 

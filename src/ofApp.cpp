@@ -4,8 +4,9 @@ using namespace ofxCv;
 using namespace cv;
 
 void ofApp::setup() {
-  for( int i=1; i<arguments.size(); i++ ) {
-    Architecture temp(arguments.at(i));
+  for( int i=2; i<arguments.size(); i++ ) {
+    // Pass each image and the threshold
+    Architecture temp(arguments.at(i), stoi(arguments.at(1)));
     images.push_back(temp);
   }
 }
