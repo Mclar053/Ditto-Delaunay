@@ -6,8 +6,10 @@ An openframeworks-based project attempting to recreate styles of architecture fr
 
 **command-line branch**
 
-`./seg.sh c` ('c' flag to denote command line app)
+`./seg.sh $PHOTO $THRESHOLD_VAL`
 
-**make and make run**
+where
 
-`./seg.sh` (compile and run new build)
+`PHOTO` (string) either `default` or `interior`
+
+`THRESHOLD_VAL` (float) threshold value used for Hough Lines Transform. Use 150 for default.
