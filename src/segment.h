@@ -11,6 +11,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxCv.h"
 
 class Segment {
   private:
@@ -24,12 +25,13 @@ class Segment {
     int h, w; // image width and height
     int imageNo; // Image index, used for folder number.
 
+    ofxCv::ContourFinder contourFinder;
+
     void removeBackground();
     bool exportSegments();
 
   public:
     Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft, int _imageNo);
     void exportSegment();
-    bool pixelDif(int r1, int g1, int b1, int r2, int g2, int b2, int diff);
     void addVertex(int i, int row); // Declare a pixel a vertex of the shape
 };
