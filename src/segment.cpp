@@ -10,11 +10,15 @@
 
 #include "segment.h"
 
+using namespace ofxCv;
+using namespace cv;
+
 Segment::Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft, int _imageNo): imgSegH(_imgSegH), imgSeg(_imgSeg), topLeft(_topLeft), imageNo(_imageNo), cCount(segCount++) {}
 
 int Segment::segCount = 0;
 
 void Segment::exportSegment() {
+
   removeBackground();
 
   string houghName = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-hough.png";
@@ -23,16 +27,12 @@ void Segment::exportSegment() {
 }
 
 void Segment::removeBackground() {
-  using namespace ofxCv;
-  using namespace cv;
-
   ofImage temp = imgSeg;
   ofImage output;
-
   Mat img1 = toCv(temp);
   Mat imgGS;
 
-  cvtColor(img1, imgGS, CV_RGB2GRAY);
+  cvtColor(img1, imgGS, CV_BGR2GRAY);
   threshold(imgGS, imgGS, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
 
   vector< vector<cv::Point> > contours;
@@ -48,16 +48,17 @@ void Segment::removeBackground() {
   double max;
   cv::Point maxPosition;
   minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
-  drawContours(mask, contours, maxPosition.y, Scalar(1), CV_FILLED);
+  drawContours(mask, contours, maxPosition.y, Scalar(255), CV_FILLED);
 
-  Mat crop(img1.rows, img1.cols, CV_8UC3);
-  crop.setTo( Scalar(255, 255, 255) );
-  img1.copyTo(crop, mask);
+  Mat rgb[3], alphaImage;
+  split(img1,rgb);
+
+  Mat rgba[4]={rgb[0],rgb[1],rgb[2],mask};
+  merge(rgba,4,alphaImage);
 
   normalize(mask.clone(), mask, 0.0, 255.0, CV_MINMAX, CV_8UC1);
 
-  toOf( crop, output );
-
+  toOf( alphaImage, output );
   string name = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-new.png";
   output.save( name );
 }
