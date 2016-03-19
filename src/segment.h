@@ -19,11 +19,17 @@ class Segment {
 
     const int cCount; // local cache of global segment count
     const ofPoint topLeft; // location of the segment in the original image
+
     ofImage imgSeg; // the image data in ofImage format
     ofImage imgSegH; // ditto ^ but for hough lines
+    ofImage imgSegFinal; // Contains the image post-background subtraction.
+
     vector<ofPoint> edges; // stores the location of segment edges
     int h, w; // image width and height
     int imageNo; // Image index, used for folder number.
+
+    vector<vector<cv::Point>> segContours;
+    int biggestContour;
 
     ofxCv::ContourFinder contourFinder;
 

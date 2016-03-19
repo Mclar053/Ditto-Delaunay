@@ -13,4 +13,5 @@ public:
   void keyPressed(int key);
 
   vector<Architecture> images;
+  int toDisplay = 0;
 };

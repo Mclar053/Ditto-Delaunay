@@ -35,20 +35,23 @@ void Segment::removeBackground() {
   cvtColor(img1, imgGS, CV_BGR2GRAY);
   threshold(imgGS, imgGS, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
 
-  vector< vector<cv::Point> > contours;
-  findContours( imgGS, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
+  findContours( imgGS, segContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
   Mat mask = Mat::zeros( imgGS.rows, imgGS.cols, CV_8UC1 );
 
-  vector<double> areas(contours.size());
+  vector<double> areas(segContours.size());
 
   // Find the most prominent contour.
-  for(int i = 0; i < contours.size(); i++)
-    areas[i] = contourArea(Mat(contours[i]));
+  for(int i = 0; i < segContours.size(); i++)
+    areas[i] = contourArea(Mat(segContours[i]));
 
   double max;
   cv::Point maxPosition;
   minMaxLoc(Mat(areas),0,&max,0,&maxPosition);
-  drawContours(mask, contours, maxPosition.y, Scalar(255), CV_FILLED);
+
+  // Cache the value of the largest contour for comparison later with other shapes
+  biggestContour = maxPosition.y;
+   
+  drawContours(mask, segContours, maxPosition.y, Scalar(255), CV_FILLED);
 
   Mat rgb[3], alphaImage;
   split(img1,rgb);
@@ -61,4 +64,9 @@ void Segment::removeBackground() {
   toOf( alphaImage, output );
   string name = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-new.png";
   output.save( name );
+  imgSegFinal = output;
+
+  imshow("segment contour", mask);
+  imshow("final seg", alphaImage);
+
 }
