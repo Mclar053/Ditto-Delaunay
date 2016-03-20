@@ -14,4 +14,5 @@ public:
 
   vector<Architecture> images;
   int toDisplay = 0;
+  ofVec2f toCompare = { 0, 0 };
 };
