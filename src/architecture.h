@@ -28,7 +28,6 @@ class Architecture {
     vector<ofPoint> iPts;
 
     vector<Vec2f> lines; // Storing the Hough lines
-    vector<Segment> segments;
     Mat threshBin, img; // cv-style binary image
     ofImage imgCopy; // copy of the imange without the Hough Lines
     int threshold; // used to determind the threshold for h lines transform.
@@ -38,4 +37,6 @@ class Architecture {
   public:
     Architecture(string _image, int _threshold = 175);
     void drawImage();
+
+    vector<Segment> segments;
 };

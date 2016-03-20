@@ -13,19 +13,24 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 
+using VecPoints = vector<cv::Point>;
+
+using namespace ofxCv;
+using namespace cv;
+
 class Segment {
   private:
     static int segCount; // Global count of objects created
 
     const int cCount; // local cache of global segment count
     const ofPoint topLeft; // location of the segment in the original image
+
     ofImage imgSeg; // the image data in ofImage format
     ofImage imgSegH; // ditto ^ but for hough lines
+
     vector<ofPoint> edges; // stores the location of segment edges
     int h, w; // image width and height
     int imageNo; // Image index, used for folder number.
-
-    ofxCv::ContourFinder contourFinder;
 
     void removeBackground();
     bool exportSegments();
@@ -34,4 +39,15 @@ class Segment {
     Segment(ofImage _imgSegH, ofImage _imgSeg, ofPoint _topLeft, int _imageNo);
     void exportSegment();
     void addVertex(int i, int row); // Declare a pixel a vertex of the shape
+
+    ofImage imgFinal; // Contains the image post-background subtraction.
+    Mat alphaImage; // Mat version of the image post-bg subtraction.
+    Mat mask; // Stores the masked image for background removal.
+    
+    string name; // Contains the name of the file for easy reference.
+
+    static double compareSegs(Segment & seg1, Segment & seg2);
+
+    vector<VecPoints> segContours;
+    int biggestContour;
 };
