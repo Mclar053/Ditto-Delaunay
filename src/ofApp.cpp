@@ -24,34 +24,17 @@ void ofApp::mousePressed(int x, int y, int button) {}
 void ofApp::keyPressed(int key) {
   if (key == OF_KEY_RETURN) {
     // Loop through the pictures
-    if (toDisplay < images.size()-1)
-      toDisplay ++;
-  else
-    toDisplay = 0;
+    (toDisplay < images.size()-1) ? toDisplay ++ : toDisplay = 0;
   } else if (key == OF_KEY_RIGHT) {
     // Loop through the segments to compare.
-    if (toCompare.x < images.at(0).segments.size()-1)
-      toCompare.x ++;
-    else
-      toCompare.x = 0;
-
-    if (toCompare.y < images.at(1).segments.size()-1)
-      toCompare.y ++;
-    else
-      toCompare.y = 0;
+    (toCompare.x < images.at(0).segments.size()-1) ? toCompare.x ++ : toCompare.x = 0;
+    (toCompare.y < images.at(1).segments.size()-1) ? toCompare.y ++ : toCompare.y = 0;
 
     Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
   } else if (key == OF_KEY_LEFT) {
     // Loop through the segments to compare.
-    if (toCompare.x > 0)
-      toCompare.x --;
-    else
-      toCompare.x = images.at(0).segments.size()-1;
-
-    if (toCompare.y > 0)
-      toCompare.y --;
-    else
-      toCompare.y = images.at(1).segments.size()-1;
+    (toCompare.x > 0) ? toCompare.x -- : toCompare.x = images.at(0).segments.size()-1;
+    (toCompare.y > 0) ? toCompare.y -- : toCompare.y = images.at(1).segments.size()-1;
 
     Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
   }
