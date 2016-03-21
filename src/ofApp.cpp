@@ -11,6 +11,8 @@ void ofApp::setup() {
   images.push_back(img2);
 
   Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
+
+  // Architecture::findBestMatches(img, img2);
 }
 
 void ofApp::update() {};
@@ -26,15 +28,23 @@ void ofApp::keyPressed(int key) {
     // Loop through the pictures
     (toDisplay < images.size()-1) ? toDisplay ++ : toDisplay = 0;
   } else if (key == OF_KEY_RIGHT) {
-    // Loop through the segments to compare.
-    (toCompare.x < images.at(0).segments.size()-1) ? toCompare.x ++ : toCompare.x = 0;
+    // loop incrementally through the second photo's segments.
     (toCompare.y < images.at(1).segments.size()-1) ? toCompare.y ++ : toCompare.y = 0;
 
     Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
   } else if (key == OF_KEY_LEFT) {
-    // Loop through the segments to compare.
-    (toCompare.x > 0) ? toCompare.x -- : toCompare.x = images.at(0).segments.size()-1;
+    // loop decremently through the second photo's segments.
     (toCompare.y > 0) ? toCompare.y -- : toCompare.y = images.at(1).segments.size()-1;
+
+    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
+  } else if (key == OF_KEY_UP) {
+    // loop incrementally through first photo's segments.
+    (toCompare.x < images.at(0).segments.size()-1) ? toCompare.x ++ : toCompare.x = 0;
+
+    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
+  } else if (key == OF_KEY_DOWN) {
+    // loop decrementally through first photo's segments.
+    (toCompare.x > 0) ? toCompare.x -- : toCompare.x = images.at(0).segments.size()-1;
 
     Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
   }

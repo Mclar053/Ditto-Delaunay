@@ -45,7 +45,14 @@ double Segment::compareSegs(Segment & seg1, Segment & seg2) {
   // Compare the largest contours (at bcX index) of each segment.
   double result = matchShapes( sc1.at(bc1), sc2.at(bc2), CV_CONTOURS_MATCH_I1, 0.0 );
 
-  cout << "Similarity of segments " << seg1.name << " + " << seg2.name << " = " << result << endl;
+  string data = "Similarity of segments " + seg1.name + " + " + seg2.name + " = " + to_string(result) + "\n";
+
+  // Write to file if the comparison is under matchShapesThresh
+  if (result != 0 && result < Segment::matchShapesThresh) {
+  }
+
+    cout << data << endl;
+
 
   return result;
 }

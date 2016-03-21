@@ -38,7 +38,8 @@ Architecture::Architecture(string _image): cCount(arcCount++) {
 
   img = toCv(image); // Convert OF image to CV bin representation
 
-  cout << "Performing Hough lines segmentation..." << endl;
+  cout << "------" << endl;
+  cout << "Performing Hough lines segmentation for image " << arcCount << "..." << endl;
 
   for( int i = 0; i < lines.size(); i++ ) {
      float rho = lines[i][0], theta = lines[i][1];
@@ -98,6 +99,24 @@ Architecture::Architecture(string _image): cCount(arcCount++) {
     seg.exportSegment();
   } );
 
+}
+
+/**
+ * @brief Performs comparison of two image's segments to find the best replacement segment.
+ *
+ * @param arc1 The first architecture to compare.
+ * @param arc2 The second architecture to compare.
+ */
+void Architecture::findBestMatches(Architecture & arc1, Architecture & arc2) {
+  
+  cout << "-----" << endl;
+  cout << "Finding best matching segments between the two images with specificity of " << Segment::matchShapesThresh << endl;
+
+  for (int i=0; i<arc1.segments.size(); i++) {
+    for (int j=0; j<arc2.segments.size(); j++) {
+      Segment::compareSegs( arc1.segments.at(i), arc2.segments.at(j) );
+    }
+  }
 }
 
 /**

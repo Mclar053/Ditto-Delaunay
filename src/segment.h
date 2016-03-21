@@ -40,6 +40,8 @@ class Segment {
     void exportSegment();
     void addVertex(int i, int row); // Declare a pixel a vertex of the shape
 
+    static constexpr float matchShapesThresh = 0.01; // When is a match deemed worthy?
+
     ofImage imgFinal; // Contains the image post-background subtraction.
     Mat alphaImage; // Mat version of the image post-bg subtraction.
     Mat mask; // Stores the masked image for background removal.
