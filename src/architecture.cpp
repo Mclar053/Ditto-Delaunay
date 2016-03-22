@@ -87,7 +87,7 @@ Architecture::Architecture(string _image): cCount(arcCount++) {
           tmpH.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
           tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
-          Segment seg(tmpH, tmp, pt, cCount );
+          Segment seg(tmpH, tmp, imgSpace.getTopLeft(), cCount );
           segments.push_back(seg);
       }
     }
@@ -110,7 +110,7 @@ Architecture::Architecture(string _image): cCount(arcCount++) {
 void Architecture::findBestMatches(Architecture & arc1, Architecture & arc2) {
   
   cout << "-----" << endl;
-  cout << "Finding best matching segments between the two images with specificity of " << Segment::matchShapesThresh << endl;
+  cout << "Finding best matching segments between the two images with specificity of between " << Segment::matchUpper << " and " << Segment::matchLower << endl;
 
   for (int i=0; i<arc1.segments.size(); i++) {
     for (int j=0; j<arc2.segments.size(); j++) {

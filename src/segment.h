@@ -23,7 +23,6 @@ class Segment {
     static int segCount; // Global count of objects created
 
     const int cCount; // local cache of global segment count
-    const ofPoint topLeft; // location of the segment in the original image
 
     ofImage imgSeg; // the image data in ofImage format
     ofImage imgSegH; // ditto ^ but for hough lines
@@ -40,7 +39,13 @@ class Segment {
     void exportSegment();
     void addVertex(int i, int row); // Declare a pixel a vertex of the shape
 
-    static constexpr float matchShapesThresh = 0.01; // When is a match deemed worthy?
+    static constexpr float matchUpper = 0.1; // Upper bounds of 'worthy' match.
+    static constexpr float matchLower = 0.125; // Lower bounds of 'worth' match.
+
+    const ofPoint topLeft; // location of the segment in the original image
+
+    double bestMatch = 100; // Stores the best match from matchShapes.
+    Segment * bestSegMatch = nullptr; // Stores the best segment match.
 
     ofImage imgFinal; // Contains the image post-background subtraction.
     Mat alphaImage; // Mat version of the image post-bg subtraction.

@@ -10,15 +10,19 @@ void ofApp::setup() {
   images.push_back(img);
   images.push_back(img2);
 
-  Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
-
-  // Architecture::findBestMatches(img, img2);
+  Architecture::findBestMatches(images.at(0), images.at(1));
 }
 
 void ofApp::update() {};
 
 void ofApp::draw() {
   images.at(toDisplay).drawImage();
+
+  // Draw all the best segment replacements in place of the old ones.
+  for ( auto const & seg : images.at(0).segments ) {
+    if ( seg.bestSegMatch != nullptr )
+      seg.bestSegMatch->imgFinal.draw(seg.topLeft);
+  }
 }
 
 void ofApp::mousePressed(int x, int y, int button) {}
