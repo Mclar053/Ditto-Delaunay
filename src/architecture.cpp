@@ -38,7 +38,8 @@ Architecture::Architecture(string _image, int _threshold): cCount(arcCount++), t
   // Apply the Hough Lines transform
   HoughLines(threshBin, lines, 1, CV_PI/180, threshold, 0, 0);
 
-  cout << "Performing Hough lines segmentation..." << endl;
+  cout << "------" << endl;
+  cout << "Performing Hough lines segmentation for image " << arcCount << "..." << endl;
 
   for( int i = 0; i < lines.size(); i++ ) {
      float rho = lines[i][0], theta = lines[i][1];
@@ -86,7 +87,7 @@ Architecture::Architecture(string _image, int _threshold): cCount(arcCount++), t
           tmpH.cropFrom(image, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
           tmp.cropFrom(imgCopy, imgSpace.getTopLeft().x, imgSpace.getTopLeft().y, imgSpace.width, imgSpace.height);
 
-          Segment seg(tmpH, tmp, pt, cCount );
+          Segment seg(tmpH, tmp, imgSpace.getTopLeft(), cCount );
           segments.push_back(seg);
       }
     }
@@ -98,6 +99,24 @@ Architecture::Architecture(string _image, int _threshold): cCount(arcCount++), t
     seg.exportSegment();
   } );
 
+}
+
+/**
+ * @brief Performs comparison of two image's segments to find the best replacement segment.
+ *
+ * @param arc1 The first architecture to compare.
+ * @param arc2 The second architecture to compare.
+ */
+void Architecture::findBestMatches(Architecture & arc1, Architecture & arc2) {
+  
+  cout << "-----" << endl;
+  cout << "Finding best matching segments between the two images with specificity of between " << Segment::matchUpper << " and " << Segment::matchLower << endl;
+
+  for (int i=0; i<arc1.segments.size(); i++) {
+    for (int j=0; j<arc2.segments.size(); j++) {
+      Segment::compareSegs( arc1.segments.at(i), arc2.segments.at(j) );
+    }
+  }
 }
 
 /**

@@ -39,25 +39,24 @@ double Segment::compareSegs(Segment & seg1, Segment & seg2) {
   drawContours(mask1, sc1, bc1, Scalar(255), CV_FILLED);
   drawContours(mask2, sc2, bc2, Scalar(255), CV_FILLED);
 
-  imshow("seg 1", mask1);
-  imshow("seg 2", mask2);
-
   // Compare the largest contours (at bcX index) of each segment.
   double result = matchShapes( sc1.at(bc1), sc2.at(bc2), CV_CONTOURS_MATCH_I1, 0.0 );
 
-  cout << "Similarity of segments " << seg1.name << " + " << seg2.name << " = " << result << endl;
+  string data = "Similarity of segments " + seg1.name + " + " + seg2.name + " = " + to_string(result) + "\n";
+
+  // Write to file if the comparison result is within thresholds
+  if (result != 0 && result > Segment::matchUpper && result < Segment::matchLower) {
+    // If it's a better comparison than before
+    if (result < seg1.bestMatch) {
+      seg1.bestMatch = result;
+      seg1.bestSegMatch = &seg2;
+    }
+  }
 
   return result;
 }
 
-void Segment::exportSegment() {
-
-  removeBackground();
-
-  // string houghName = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + "-hough.png";
-  
-  // imgSegH.save(houghName, OF_IMAGE_QUALITY_BEST);
-}
+void Segment::exportSegment() { removeBackground(); }
 
 void Segment::removeBackground() {
   ofImage temp = imgSeg;

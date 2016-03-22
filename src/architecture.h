@@ -38,5 +38,13 @@ class Architecture {
     Architecture(string _image, int _threshold = 175);
     void drawImage();
 
+    /**
+     * @brief Performs comparison of two image's segments to find the best replacement segment.
+     *
+     * @param arc1 The first architecture to compare.
+     * @param arc2 The second architecture to compare.
+     */
+    static void findBestMatches(Architecture & arc1, Architecture & arc2);
+
     vector<Segment> segments;
 };
