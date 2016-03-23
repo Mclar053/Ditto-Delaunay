@@ -4,11 +4,19 @@ using namespace ofxCv;
 using namespace cv;
 
 void ofApp::setup() {
-  for( int i=2; i<arguments.size(); i++ ) {
-    // Pass each image and the threshold
-    Architecture temp(arguments.at(i), stoi(arguments.at(1)));
-    images.push_back(temp);
-  }
+  // Pass each image and the threshold
+  
+ // for ( int i=2; i<arguments.size(); i++ ) {
+ //   Architecture img(arguments.at(i+2), stoi(arguments.at(i)));
+
+ //   images.push_back(img);
+ // }
+
+  Architecture img1(arguments.at(3), stoi(arguments.at(1)));
+  Architecture img2(arguments.at(4), stoi(arguments.at(2)));
+
+  images.push_back(img1);
+  images.push_back(img2);
 
   Architecture::findBestMatches(images.at(0), images.at(1));
 }
@@ -27,6 +35,12 @@ void ofApp::draw() {
     exit();
     cout << "No images supplied, or incorrectly... exiting." << endl;
   }
+
+  // for(int i=0; i< arguments.size(); i++) {
+  //   ofDrawBitmapString(arguments.at(i) + to_string(i), 30, 30*(i+1) );
+  // }
+
+  // images.at(toDisplay).drawImage();
 }
 
 void ofApp::mousePressed(int x, int y, int button) {}

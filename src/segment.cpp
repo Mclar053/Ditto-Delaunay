@@ -25,6 +25,9 @@ int Segment::segCount = 0;
  */
 double Segment::compareSegs(Segment & seg1, Segment & seg2) {
 
+  // Ensure we're not using the same segment twice.
+  if ( seg2.hasBeenUsed ) return 100;
+
   /**
    * cache member variables for ease of re-use
    */
@@ -44,10 +47,14 @@ double Segment::compareSegs(Segment & seg1, Segment & seg2) {
 
   string data = "Similarity of segments " + seg1.name + " + " + seg2.name + " = " + to_string(result) + "\n";
 
-  // Write to file if the comparison result is within thresholds
+  // Write to file if the comparison result is within threshold.
   if (result != 0 && result > Segment::matchUpper && result < Segment::matchLower) {
     // If it's a better comparison than before
     if (result < seg1.bestMatch) {
+      seg1.bestSegMatch->hasBeenUsed = false; // No longer being replaced.
+      seg2.hasBeenUsed = true;
+      
+      // Set the new segment.
       seg1.bestMatch = result;
       seg1.bestSegMatch = &seg2;
     }
@@ -94,5 +101,5 @@ void Segment::removeBackground() {
 
   toOf( alphaImage, imgFinal );
   name = "seg" + to_string(imageNo) + "/segment" + to_string(cCount) + ".png";
-  imgFinal.save( name );
+  // imgFinal.save( name );
 }

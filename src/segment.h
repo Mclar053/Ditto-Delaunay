@@ -39,8 +39,10 @@ class Segment {
     void exportSegment();
     void addVertex(int i, int row); // Declare a pixel a vertex of the shape
 
-    static constexpr float matchUpper = 0.01; // Upper bounds of 'worthy' match.
+    static constexpr float matchUpper = 0.2; // Upper bounds of 'worthy' match.
     static constexpr float matchLower = 0.5; // Lower bounds of 'worth' match.
+
+    bool hasBeenUsed = false; // Checks whether this segment has been used before or not.
 
     const ofPoint topLeft; // location of the segment in the original image
 
