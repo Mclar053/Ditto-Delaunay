@@ -51,7 +51,7 @@ double Segment::compareSegs(Segment & seg1, Segment & seg2) {
   if (result != 0 && result > Segment::matchUpper && result < Segment::matchLower) {
     // If it's a better comparison than before
     if (result < seg1.bestMatch) {
-      seg1.bestSegMatch->hasBeenUsed = false; // No longer being replaced.
+      if ( seg1.bestSegMatch != nullptr ) seg1.bestSegMatch->hasBeenUsed = false; // No longer being replaced.
       seg2.hasBeenUsed = true;
       
       // Set the new segment.

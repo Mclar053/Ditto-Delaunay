@@ -12,7 +12,6 @@ public:
   void mousePressed(int x, int y, int button);
   void keyPressed(int key);
 
-  vector<string> arguments;
   vector<Architecture> images;
   int toDisplay = 0;
   ofVec2f toCompare = { 0, 0 };
