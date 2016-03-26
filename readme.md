@@ -1,15 +1,7 @@
 # architecture
 
-An openframeworks-based project attempting to recreate styles of architecture from other shapes and epochs using openCV.
+An openframeworks-based project attempting to recreate styles of architecture from other shapes and epochs using openCV and ofxDelaunay.
 
-## To run:
+This branch is using ofxDelaunay to segment the image into triangles, based on Harris corner detection, which can then be easily compared based on angle, rotation, scale and position.
 
-**command-line branch**
-
-`./seg.sh $PHOTO $THRESHOLD_VAL`
-
-where
-
-`PHOTO` (string) either `default` or `interior`
-
-`THRESHOLD_VAL` (float) threshold value used for Hough Lines Transform. Use 150 for default.
+The image that will be overlaying these triangles can then be translated into the positions of the segments it matches. This will therefore be creating a new image based on geometric properties of the original image.
