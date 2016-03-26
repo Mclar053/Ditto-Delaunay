@@ -30,10 +30,16 @@ void Tri_Segment::printAngles(){
 //Compares 2 triangle segements
 //Takes Another triangle segment as argument
 void Tri_Segment::compare(Tri_Segment _other){
+    //Ensures that the segment has not been compared already
+    //and is the same/similar to the other triangle segment
     if(compareAngles(_other)&& !_other.compared){
+        //Sets random colour to the current triangle and the other to identify what has been compared
         ofColor randomCol = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
         col = randomCol;
         _other.col = randomCol;
+        
+        //Sets both triangles to compared = true
+        //Stops being compared again
         compared = true;
         _other.compared = true;
         cout<<"Match"<<endl;
@@ -48,18 +54,17 @@ void Tri_Segment::compare(Tri_Segment _other){
 //Return true or false whether the angles match
 bool Tri_Segment::compareAngles(Tri_Segment _other){
     
-        //2/-
+        //1/-
         vector<float> otherAngles;
         otherAngles = _other.getAllAngles();
         
-        //3/-
+        //2/-
         vector<int> firstVertexPos;
         for(int i=0; i<otherAngles.size(); i++){
             if(abs(angles[0]-otherAngles[i])<=3) firstVertexPos.push_back(i);
         }
         
-        //4/-
-        
+        //3/-
         for(int _vertex : firstVertexPos){
             if(checkAnglePos(angles, otherAngles, _vertex,1)){
                 return true;
@@ -71,6 +76,9 @@ bool Tri_Segment::compareAngles(Tri_Segment _other){
         return false;
 }
 
+//Checks the angles of the current triangle angle array and the other triangle angle array
+//Returns true if all angles are within 3 degrees of each other
+//Returns false if any angles are over 3 degrees of each other
 bool Tri_Segment::checkAnglePos(vector<float> _angles, vector<float> _otherAngles, int _firstPos, int _multiplier){
     int nextPos;
     for(int i=1; i<angles.size(); i++){
@@ -103,20 +111,22 @@ float Tri_Segment::getAngle(int i){
     return theta*180/PI;
 }
 
+//Gets the mid point of the current triangle segment
+//Adds all the vertices together and divides by the number of vertices (in this case 3)
+//Returns the midpoint of the current triangle - ofPoint type
 ofPoint Tri_Segment::getMidPos(){
-//    ofPoint midPoint = vertices.at(0).middle(vertices.at(1));
     
     float x, y;
     
-    for(auto _vertex: vertices){
-        cout<<"Vertex: "<<_vertex<<endl;
-    }
-    cout<<"------"<<endl;
     x = (vertices.at(0).x + vertices.at(1).x + vertices.at(2).x)/3;
     y = (vertices.at(0).y + vertices.at(1).y + vertices.at(2).y)/3;
     
     ofPoint mid = ofPoint(x,y,0);
-    cout<<mid<<endl;
     
     return mid;
+}
+
+//Gets angle of rotation from one triangle to the other triangle which has been compared to
+float Tri_Segment::getRotationToOther(Tri_Segment _other){
+    
 }

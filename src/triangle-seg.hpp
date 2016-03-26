@@ -18,9 +18,17 @@ class Tri_Segment{
     ofImage img;
     
     bool compareAngles(Tri_Segment _other);
+    float getRotationToOther(Tri_Segment _other);
+    
+    ofPoint getMidPos();
+    
     
 public:
     Tri_Segment(vector<ofPoint> _corners);
+    
+    ofPoint midPoint;
+    ofColor col = ofColor(255);
+    bool compared;
     
     void compare(Tri_Segment _other);
     float getAngle(int i);
@@ -29,14 +37,9 @@ public:
     vector<float> getAllAngles(){
         return angles;
     };
-    
-    ofPoint getMidPos();
-    ofPoint midPoint;
+
     
     bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier);
-    
-    ofColor col = ofColor(255);
-    bool compared;
 };
 
 #endif /* segment_hpp */
