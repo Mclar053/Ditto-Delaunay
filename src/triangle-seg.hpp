@@ -12,14 +12,14 @@
 #include <stdio.h>
 #include "../ofMain.h"
 
-class Segment{
+class Tri_Segment{
     vector<ofPoint> vertices;
     vector<float> angles;
     ofImage img;
 public:
-    Segment(vector<ofPoint> _corners);
+    Tri_Segment(vector<ofPoint> _corners);
     
-    void compare(Segment _other);
+    void compare(Tri_Segment _other);
     float getAngle(int i);
     void printAngles();
 };
