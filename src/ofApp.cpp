@@ -29,12 +29,15 @@ void ofApp::draw(){
     ofPushStyle();
     ofNoFill();
     ofSetColor(255);
-        triangulation.draw();
+//        triangulation.draw();
     ofPopStyle();
     ofDrawBitmapString("'r' to reset", ofPoint(10,20));
     
     for(int i=0; i<triangulation.getNumTriangles(); i++){
         vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
+        ofDrawLine(points[0].x, points[0].y, points[1].x, points[1].y);
+        ofDrawLine(points[0].x, points[0].y, points[2].x, points[2].y);
+        ofDrawLine(points[2].x, points[2].y, points[1].x, points[1].y);
         font->drawString(to_string(points[0].x)+" "+to_string(points[0].y), points[0].x, points[0].y);
         font->drawString(to_string(points[1].x)+" "+to_string(points[1].y), points[1].x, points[1].y);
         font->drawString(to_string(points[2].x)+" "+to_string(points[2].y), points[2].x, points[2].y);
