@@ -5,7 +5,7 @@ using namespace cv;
 
 void ofApp::setup() {
   Architecture img = Architecture("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  Architecture img2 = Architecture("long.jpg");
+  Architecture img2 = Architecture("long.png");
 
   images.push_back(img);
   images.push_back(img2);
