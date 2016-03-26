@@ -3,53 +3,102 @@
 using namespace ofxCv;
 using namespace cv;
 
-void ofApp::setup() {
-  Architecture img = Architecture("http://www.tekuto.com/wp-content/themes/tekuto2nd/images/topmain/toruso01.jpg?=20151006");
-  Architecture img2 = Architecture("long.png");
-
-  images.push_back(img);
-  images.push_back(img2);
-
-  Architecture::findBestMatches(images.at(0), images.at(1));
+//--------------------------------------------------------------
+void ofApp::setup(){
+    font = new ofTrueTypeFont();
+    font->load(OF_TTF_SANS, 10);
+    ofEnableSmoothing();
+    ofBackground(0);
+    //    for (int i=0; i<300; i++)
+    //    {
+    //        float x = ofRandom(ofGetWidth());
+    //        float y = ofRandom(ofGetHeight());
+    //        ofPoint randomPoint(x, y);
+    //        triangulation.addPoint(randomPoint);
+    //    }
 }
 
-void ofApp::update() {};
-
-void ofApp::draw() {
-  images.at(toDisplay).drawImage();
-
-  // Draw all the best segment replacements in place of the old ones.
-  for ( auto const & seg : images.at(0).segments ) {
-    if ( seg.bestSegMatch != nullptr )
-      seg.bestSegMatch->imgFinal.draw(seg.topLeft);
-  }
+//--------------------------------------------------------------
+void ofApp::update(){
+    
 }
 
-void ofApp::mousePressed(int x, int y, int button) {}
+//--------------------------------------------------------------
+void ofApp::draw(){
+    
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(255);
+        triangulation.draw();
+    ofPopStyle();
+    ofDrawBitmapString("'r' to reset", ofPoint(10,20));
+    
+    for(int i=0; i<triangulation.getNumTriangles(); i++){
+        vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
+        font->drawString(to_string(points[0].x)+" "+to_string(points[0].y), points[0].x, points[0].y);
+        font->drawString(to_string(points[1].x)+" "+to_string(points[1].y), points[1].x, points[1].y);
+        font->drawString(to_string(points[2].x)+" "+to_string(points[2].y), points[2].x, points[2].y);
+    }
+    
+    for(auto _seg: segs){
+        ofPushStyle();
+            ofSetColor(_seg.col);
+//        ofPoint mid = _seg.getMidPos();
+            font->drawString(to_string(_seg.midPoint.x)+" "+to_string(_seg.midPoint.y),_seg.midPoint.x,_seg.midPoint.y);
+            ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10, 10);
+//            cout<<"Seg: "<<mid<<endl;
+        ofPopStyle();
+    }
+}
 
-void ofApp::keyPressed(int key) {
-  if (key == OF_KEY_RETURN) {
-    // Loop through the pictures
-    (toDisplay < images.size()-1) ? toDisplay ++ : toDisplay = 0;
-  } else if (key == OF_KEY_RIGHT) {
-    // loop incrementally through the second photo's segments.
-    (toCompare.y < images.at(1).segments.size()-1) ? toCompare.y ++ : toCompare.y = 0;
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+    if(key == 'r'){
+        segs.clear();
+        triangulation.reset();
+    }
+    if(key=='l'){
+        segs.clear();
+        vector<ofPoint> points;
+        for(int i=0; i<triangulation.getNumTriangles(); i++){
+            points.clear();
+            points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
+            for(auto _p: points)
+                cout<<_p<<endl;
+            segs.push_back(Tri_Segment(points));
+            segs.at(i).printAngles();
+        }
+        
+    }
+    if(key=='m'){
+        int num = 0;
+        for(int i=0; i<segs.size(); i++){
+            for(int j=i+1; j<segs.size(); j++){
+                segs.at(i).compare(segs.at(j));
+                num++;
+            }
+        }
+        cout<<num<<endl;
+    }
+}
 
-    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
-  } else if (key == OF_KEY_LEFT) {
-    // loop decremently through the second photo's segments.
-    (toCompare.y > 0) ? toCompare.y -- : toCompare.y = images.at(1).segments.size()-1;
+//--------------------------------------------------------------
+void ofApp::keyReleased(int key){
+    
+}
 
-    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
-  } else if (key == OF_KEY_UP) {
-    // loop incrementally through first photo's segments.
-    (toCompare.x < images.at(0).segments.size()-1) ? toCompare.x ++ : toCompare.x = 0;
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y ){
+    
+}
 
-    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
-  } else if (key == OF_KEY_DOWN) {
-    // loop decrementally through first photo's segments.
-    (toCompare.x > 0) ? toCompare.x -- : toCompare.x = images.at(0).segments.size()-1;
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+    
+}
 
-    Segment::compareSegs(images.at(0).segments.at(toCompare.x), images.at(1).segments.at(toCompare.y));
-  }
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+    triangulation.addPoint(ofPoint(x,y));
+    triangulation.triangulate();
 }
