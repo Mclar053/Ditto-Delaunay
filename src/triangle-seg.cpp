@@ -10,6 +10,8 @@
 
 Tri_Segment::Tri_Segment(vector<ofPoint> _corners): compared(false){
     vertices = _corners;
+    col = ofColor(255);
+    otherSeg = nullptr;
     for(int i=0; i<vertices.size(); i++){
         cout<<"Vertex "<<i<<": "<<vertices.at(i)<<endl;
         angles.push_back(getAngle(i));
@@ -20,8 +22,13 @@ Tri_Segment::Tri_Segment(vector<ofPoint> _corners): compared(false){
 void Tri_Segment::printAngles(){
     cout<<"Triangle angles: ";
     cout<<angles[0]<<" "<<angles[1]<<" "<<angles[2]<<endl;
-    cout<<angles[0]+angles[1]+angles[2]<<endl;
     cout<<"1: "<<vertices[0]<<" 2: "<<vertices[1]<<" 3: "<<vertices[2]<<endl;
+//    cout<<angles[0]+angles[1]+angles[2]<<endl;
+    /*if(otherSeg!=nullptr){
+        cout<<"Other Triangle angles: ";
+        cout<<otherSeg->angles[0]<<" "<<otherSeg->angles[1]<<" "<<otherSeg->angles[2]<<endl;
+        cout<<"1: "<<otherSeg->vertices[0]<<" 2: "<<otherSeg->vertices[1]<<" 3: "<<otherSeg->vertices[2]<<endl;
+    }*/
 //    for(int i=0; i<angles.size(); i++){
 //        cout<<"Angle "<<i<<": "<<angles.at(i)<<" -- ";
 //    }
@@ -29,14 +36,21 @@ void Tri_Segment::printAngles(){
 }
 //Compares 2 triangle segements
 //Takes Another triangle segment as argument
-void Tri_Segment::compare(Tri_Segment _other){
+void Tri_Segment::compare(Tri_Segment& _other){
     //Ensures that the segment has not been compared already
     //and is the same/similar to the other triangle segment
     if(compareAngles(_other)&& !_other.compared){
         //Sets random colour to the current triangle and the other to identify what has been compared
         ofColor randomCol = ofColor(ofRandom(255),ofRandom(255),ofRandom(255));
+        
         col = randomCol;
         _other.col = randomCol;
+        otherSeg = &_other;
+        
+//        cout<<"current::: "<<midPoint<<endl;
+//        printAngles();
+//        cout<<"other::: "<<_other.midPoint<<endl;
+//        _other.printAngles();
         
         //Sets both triangles to compared = true
         //Stops being compared again
@@ -54,7 +68,7 @@ void Tri_Segment::compare(Tri_Segment _other){
 //Compares angles between 2 triangles
 //Take another triangle segment as argument
 //Return true or false whether the angles match
-bool Tri_Segment::compareAngles(Tri_Segment _other){
+bool Tri_Segment::compareAngles(Tri_Segment& _other){
     
         //1/-
         vector<float> otherAngles;
@@ -90,7 +104,7 @@ bool Tri_Segment::checkAnglePos(vector<float> _angles, vector<float> _otherAngle
 }
 
 //Gets angle of rotation from the current triangle to the other triangle
-float Tri_Segment::getRotationToOther(Tri_Segment _other){
+float Tri_Segment::getRotationToOther(Tri_Segment& _other){
     vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
     float thetaOne = getAngle(vertices.at(0));
     float thetaTwo = _other.getAngle(_other.vertices.at(vertexPositions.at(0)));

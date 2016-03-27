@@ -32,15 +32,16 @@ void ofApp::draw(){
 //        triangulation.draw();
     ofPopStyle();
     ofDrawBitmapString("'r' to reset", ofPoint(10,20));
+    ofDrawBitmapString(to_string(triangulation.getNumTriangles()), ofPoint(10,40));
     
     for(int i=0; i<triangulation.getNumTriangles(); i++){
         vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
-        ofDrawLine(points[0].x, points[0].y, points[1].x, points[1].y);
-        ofDrawLine(points[0].x, points[0].y, points[2].x, points[2].y);
-        ofDrawLine(points[2].x, points[2].y, points[1].x, points[1].y);
-        font->drawString(to_string(points[0].x)+" "+to_string(points[0].y), points[0].x, points[0].y);
-        font->drawString(to_string(points[1].x)+" "+to_string(points[1].y), points[1].x, points[1].y);
-        font->drawString(to_string(points[2].x)+" "+to_string(points[2].y), points[2].x, points[2].y);
+//        ofDrawLine(points[0].x, points[0].y, points[1].x, points[1].y);
+//        ofDrawLine(points[0].x, points[0].y, points[2].x, points[2].y);
+//        ofDrawLine(points[2].x, points[2].y, points[1].x, points[1].y);
+//        font->drawString(to_string(points[0].x)+" "+to_string(points[0].y), points[0].x, points[0].y);
+//        font->drawString(to_string(points[1].x)+" "+to_string(points[1].y), points[1].x, points[1].y);
+//        font->drawString(to_string(points[2].x)+" "+to_string(points[2].y), points[2].x, points[2].y);
     }
     
     for(auto _seg: segs){
@@ -79,6 +80,14 @@ void ofApp::keyPressed(int key){
             for(int j=i+1; j<segs.size(); j++){
                 segs.at(i).compare(segs.at(j));
                 num++;
+            }
+        }
+        
+        for(auto _s : segs){
+            if(_s.otherSeg!=nullptr){
+                cout<<_s.midPoint<<" -- "<<_s.otherSeg->midPoint<<endl;
+                _s.printAngles();
+                _s.otherSeg->printAngles();
             }
         }
         cout<<num<<endl;
