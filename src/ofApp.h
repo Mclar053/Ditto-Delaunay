@@ -20,5 +20,9 @@ public:
     ofxDelaunay triangulation;
     vector<Tri_Segment> segs;
     
+    ofImage mainImg;
+    
     ofTrueTypeFont* font;
+    
+    bool done;
 };

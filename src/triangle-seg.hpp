@@ -11,29 +11,31 @@
 
 #include <stdio.h>
 #include "../ofMain.h"
+#include "ofxDelaunay.h"
 
 class Tri_Segment{
     vector<ofPoint> vertices;
     vector<float> angles;
-    ofImage img;
-    ofPoint topLeft, bottomRight;
+    ofxDelaunay triangulation;
     
     bool compareAngles(Tri_Segment& _other);
     float getRotationToOther(Tri_Segment& _other);
-    
-    void createImage();
     
     vector<int> getFirstVertexPos(vector<float> _otherAngles);
     ofPoint getMidPos();
     
     
+    
+    
 public:
-    Tri_Segment(vector<ofPoint> _corners);
+    Tri_Segment(vector<ofPoint> _corners, ofImage& _mainImg);
     
     ofPoint midPoint;
     ofColor col;
     bool compared;
+    ofImage img;
     Tri_Segment* otherSeg;
+    ofPoint topLeft, bottomRight;
     
     void compare(Tri_Segment& _other);
     float getAngle(int i);
@@ -44,6 +46,8 @@ public:
         return angles;
     };
 
+    void resizeImage(ofImage& _mainImg);
+    void createImage(ofImage& _img);
     
     bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier);
 };

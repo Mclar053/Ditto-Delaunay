@@ -8,7 +8,7 @@
 
 #include "triangle-seg.hpp"
 
-Tri_Segment::Tri_Segment(vector<ofPoint> _corners): compared(false){
+Tri_Segment::Tri_Segment(vector<ofPoint> _corners, ofImage& _mainImg): compared(false){
     vertices = _corners;
     col = ofColor(255);
     otherSeg = nullptr;
@@ -17,6 +17,7 @@ Tri_Segment::Tri_Segment(vector<ofPoint> _corners): compared(false){
         angles.push_back(getAngle(i));
     }
     midPoint = getMidPos();
+    resizeImage(_mainImg);
 }
 
 void Tri_Segment::printAngles(){
@@ -166,7 +167,8 @@ vector<int> Tri_Segment::getFirstVertexPos(vector<float> _otherAngles){
     return firstVertexPos;
 }
 
-void Tri_Segment::createImage(){
+//Resizes the ofImage object to the size of the triangle segment
+void Tri_Segment::resizeImage(ofImage& _mainImg){
     //Set top left and bottom right ofPoints to values they are at their max
     topLeft = ofPoint(99999,99999,0);
     bottomRight = ofPoint(0,0,0);
@@ -187,6 +189,50 @@ void Tri_Segment::createImage(){
             bottomRight.y = _p.y;
         }
     }
+    
+    
+    for(auto _v: vertices){
+        triangulation.addPoint(_v-topLeft);
+//        cout<<"TopLEFT: "<<_v-topLeft<<endl;
+    }
+    //    triangulation.addPoints(vertices);
+    triangulation.triangulate();
+    
+    
+    
     //Set image to the width and height of the triangle
-    img.resize(bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
+    img.allocate(bottomRight.x-topLeft.x, bottomRight.y-topLeft.y, OF_IMAGE_COLOR_ALPHA);
+    for(int i=0; i<img.getWidth(); i++){
+        for(int j=0; j<img.getHeight(); j++){
+            ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(i,j));
+            vector<ofPoint> _points = triangulation.getPointsForITriangle(tri);
+//            cout<<_points[0]<<" "<<_points[1]<<" "<<_points[2]<<endl;
+//            cout<<tri.p1<<" "<<tri.p2<<" "<<tri.p3<<endl;
+            
+            if(tri.p1!=0 || tri.p2!=0 || tri.p3!=0){
+                img.setColor(i,j,_mainImg.getColor(i+topLeft.x, j+topLeft.y));
+//                cout<<i<<" "<<j<<" Check!!"<<endl;
+            }
+            else{
+                img.setColor(i, j, ofColor(255,255,255,0));
+//                cout<<i<<" "<<j<<" NOPE!!"<<endl;
+            }
+        }
+    }
+    img.update();
+}
+
+
+void Tri_Segment::createImage(ofImage& _img){
+    
+//            cout<<_img.getColor(i,j)<<endl;
+//            ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(i,j));
+//            if(tri.p1!=0 && tri.p2!=0 && tri.p3!=0){
+//            j*img.getWidth()+i
+            
+//            }
+//            else{
+//                img.setColor(i,j,ofColor(0,0,0));
+//            }
+    
 }
