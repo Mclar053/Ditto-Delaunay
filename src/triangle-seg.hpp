@@ -20,6 +20,7 @@ class Tri_Segment{
     bool compareAngles(Tri_Segment _other);
     float getRotationToOther(Tri_Segment _other);
     
+    vector<int> getFirstVertexPos(vector<float> _otherAngles);
     ofPoint getMidPos();
     
     
@@ -32,6 +33,7 @@ public:
     
     void compare(Tri_Segment _other);
     float getAngle(int i);
+    float getAngle(ofPoint p1);
     void printAngles();
     
     vector<float> getAllAngles(){

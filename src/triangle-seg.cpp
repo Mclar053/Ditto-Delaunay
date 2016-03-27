@@ -42,6 +42,8 @@ void Tri_Segment::compare(Tri_Segment _other){
         //Stops being compared again
         compared = true;
         _other.compared = true;
+        
+        cout<<"Rotation: "<<getRotationToOther(_other)<<endl;
         cout<<"Match"<<endl;
     } else{
         cout<<"No Match"<<endl;
@@ -59,10 +61,7 @@ bool Tri_Segment::compareAngles(Tri_Segment _other){
         otherAngles = _other.getAllAngles();
         
         //2/-
-        vector<int> firstVertexPos;
-        for(int i=0; i<otherAngles.size(); i++){
-            if(abs(angles[0]-otherAngles[i])<=3) firstVertexPos.push_back(i);
-        }
+        vector<int> firstVertexPos = getFirstVertexPos(otherAngles);
         
         //3/-
         for(int _vertex : firstVertexPos){
@@ -90,6 +89,15 @@ bool Tri_Segment::checkAnglePos(vector<float> _angles, vector<float> _otherAngle
     return true;
 }
 
+//Gets angle of rotation from the current triangle to the other triangle
+float Tri_Segment::getRotationToOther(Tri_Segment _other){
+    vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
+    float thetaOne = getAngle(vertices.at(0));
+    float thetaTwo = _other.getAngle(_other.vertices.at(vertexPositions.at(0)));
+    
+    return thetaOne-thetaTwo;
+}
+
 //Dot product to get return angle
 float Tri_Segment::getAngle(int i){
     //Checks next and previous vertices to ensure that program doesn't choose a vertex that is out of bounds to the vertices vector
@@ -111,6 +119,15 @@ float Tri_Segment::getAngle(int i){
     return theta*180/PI;
 }
 
+float Tri_Segment::getAngle(ofPoint p1){
+    ofPoint vectorOne = midPoint-p1;
+    ofPoint vectorTwo = midPoint - ofPoint(midPoint.x,midPoint.y-300,0);
+    
+    float theta = acos((vectorOne.x*vectorTwo.x+vectorOne.y*vectorTwo.y)/(vectorOne.length()*vectorTwo.length()));
+    
+    return theta*180/PI;
+}
+
 //Gets the mid point of the current triangle segment
 //Adds all the vertices together and divides by the number of vertices (in this case 3)
 //Returns the midpoint of the current triangle - ofPoint type
@@ -126,7 +143,11 @@ ofPoint Tri_Segment::getMidPos(){
     return mid;
 }
 
-//Gets angle of rotation from one triangle to the other triangle which has been compared to
-float Tri_Segment::getRotationToOther(Tri_Segment _other){
-    
+vector<int> Tri_Segment::getFirstVertexPos(vector<float> _otherAngles){
+    vector<int> firstVertexPos;
+    for(int i=0; i<_otherAngles.size(); i++){
+        if(abs(angles[0]-_otherAngles[i])<=3)
+            firstVertexPos.push_back(i);
+    }
+    return firstVertexPos;
 }
