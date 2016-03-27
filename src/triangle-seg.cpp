@@ -165,3 +165,28 @@ vector<int> Tri_Segment::getFirstVertexPos(vector<float> _otherAngles){
     }
     return firstVertexPos;
 }
+
+void Tri_Segment::createImage(){
+    //Set top left and bottom right ofPoints to values they are at their max
+    topLeft = ofPoint(99999,99999,0);
+    bottomRight = ofPoint(0,0,0);
+    
+    //Go through all vertices and find the top left most point and the bottom right most point
+    for(auto _p: vertices){
+        if(_p.x<topLeft.x){
+            topLeft.x = _p.x;
+        }
+        if(_p.y<topLeft.y){
+            topLeft.y = _p.y;
+        }
+        
+        if(_p.x>bottomRight.x){
+            bottomRight.x = _p.x;
+        }
+        if(_p.y>bottomRight.y){
+            bottomRight.y = _p.y;
+        }
+    }
+    //Set image to the width and height of the triangle
+    img.resize(bottomRight.x-topLeft.x, bottomRight.y-topLeft.y);
+}

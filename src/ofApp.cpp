@@ -36,9 +36,12 @@ void ofApp::draw(){
     
     for(int i=0; i<triangulation.getNumTriangles(); i++){
         vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
-//        ofDrawLine(points[0].x, points[0].y, points[1].x, points[1].y);
-//        ofDrawLine(points[0].x, points[0].y, points[2].x, points[2].y);
-//        ofDrawLine(points[2].x, points[2].y, points[1].x, points[1].y);
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        ofDrawLine(points[0].x, points[0].y, points[1].x, points[1].y);
+        ofDrawLine(points[0].x, points[0].y, points[2].x, points[2].y);
+        ofDrawLine(points[2].x, points[2].y, points[1].x, points[1].y);
+        ofPopStyle();
 //        font->drawString(to_string(points[0].x)+" "+to_string(points[0].y), points[0].x, points[0].y);
 //        font->drawString(to_string(points[1].x)+" "+to_string(points[1].y), points[1].x, points[1].y);
 //        font->drawString(to_string(points[2].x)+" "+to_string(points[2].y), points[2].x, points[2].y);
@@ -111,6 +114,17 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    triangulation.addPoint(ofPoint(x,y));
-    triangulation.triangulate();
+    if(button == OF_MOUSE_BUTTON_LEFT){
+        triangulation.addPoint(ofPoint(x,y));
+        triangulation.triangulate();
+    }
+    if(button == OF_MOUSE_BUTTON_RIGHT){
+        cout<<"-----NEW-------"<<endl;
+        ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(x,y));
+        vector<ofPoint> points = triangulation.getPointsForITriangle(tri);
+        for(auto _p: points){
+            cout<<_p<<endl;
+        }
+        cout<<"------------"<<endl;
+    }
 }

@@ -16,9 +16,12 @@ class Tri_Segment{
     vector<ofPoint> vertices;
     vector<float> angles;
     ofImage img;
+    ofPoint topLeft, bottomRight;
     
     bool compareAngles(Tri_Segment& _other);
     float getRotationToOther(Tri_Segment& _other);
+    
+    void createImage();
     
     vector<int> getFirstVertexPos(vector<float> _otherAngles);
     ofPoint getMidPos();
