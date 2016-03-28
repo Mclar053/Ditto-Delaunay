@@ -24,5 +24,5 @@ public:
     
     ofTrueTypeFont* font;
     
-    bool done;
+    bool done,rotBool,scaBool, picBool;
 };

@@ -13,11 +13,12 @@ Tri_Segment::Tri_Segment(vector<ofPoint> _corners, ofImage& _mainImg): compared(
     col = ofColor(255);
     otherSeg = nullptr;
     for(int i=0; i<vertices.size(); i++){
-        cout<<"Vertex "<<i<<": "<<vertices.at(i)<<endl;
         angles.push_back(getAngle(i));
     }
     midPoint = getMidPos();
-    resizeImage(_mainImg);
+    rotation = 0;
+    flipped = 1;
+    createImage(_mainImg);
 }
 
 void Tri_Segment::printAngles(){
@@ -48,17 +49,14 @@ void Tri_Segment::compare(Tri_Segment& _other){
         _other.col = randomCol;
         otherSeg = &_other;
         
-//        cout<<"current::: "<<midPoint<<endl;
-//        printAngles();
-//        cout<<"other::: "<<_other.midPoint<<endl;
-//        _other.printAngles();
-        
         //Sets both triangles to compared = true
         //Stops being compared again
         compared = true;
         _other.compared = true;
         
         cout<<"Rotation: "<<getRotationToOther(_other)<<endl;
+        rotation = getRotationToOther(_other);
+        scale = getScaleToOther(_other);
         cout<<"Match"<<endl;
     } else{
         cout<<"No Match"<<endl;
@@ -81,9 +79,11 @@ bool Tri_Segment::compareAngles(Tri_Segment& _other){
         //3/-
         for(int _vertex : firstVertexPos){
             if(checkAnglePos(angles, otherAngles, _vertex,1)){
+//                flipped = 1;
                 return true;
             }
             if(checkAnglePos(angles, otherAngles, _vertex,-1)){
+                flipped = -1;
                 return true;
             }
         }
@@ -97,7 +97,7 @@ bool Tri_Segment::checkAnglePos(vector<float> _angles, vector<float> _otherAngle
     int nextPos;
     for(int i=1; i<angles.size(); i++){
         nextPos = (_firstPos+(i*_multiplier))%-(_otherAngles.size());
-        if(abs(angles[i]-_otherAngles[nextPos])>3){
+        if(abs(angles[i]-_otherAngles[nextPos])>1){
             return false;
         }
     }
@@ -110,10 +110,24 @@ float Tri_Segment::getRotationToOther(Tri_Segment& _other){
     float thetaOne = getAngle(vertices.at(0));
     float thetaTwo = _other.getAngle(_other.vertices.at(vertexPositions.at(0)));
     
-    return thetaOne-thetaTwo;
+//    if(flipped==-1){
+//        thetaOne=-thetaOne;
+//    }
+    
+    return thetaTwo-thetaOne;
 }
 
-//Dot product to get return angle
+float Tri_Segment::getScaleToOther(Tri_Segment& _other){
+    vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
+    ofPoint vectorOne = ofPoint(abs(midPoint.x-vertices.at(0).x),abs(midPoint.y-vertices.at(0).y));
+    ofPoint vectorTwo = ofPoint(abs(midPoint.x-_other.vertices.at(vertexPositions.at(0)).x),abs(midPoint.y-_other.vertices.at(vertexPositions.at(0)).y));
+    
+    cout<<"V1: "<<vectorOne<<" Mag: "<<vectorOne.length()<<"V2: "<<vectorTwo<<" Mag: "<<vectorTwo.length()<<"V1/V2: "<<vectorOne/vectorTwo<<" -- "<<vectorTwo.length()/vectorOne.length()<<endl;
+    
+    return vectorTwo.length()/vectorOne.length();
+}
+
+//Dot product to get return angle based on index of the vertices vector
 float Tri_Segment::getAngle(int i){
     //Checks next and previous vertices to ensure that program doesn't choose a vertex that is out of bounds to the vertices vector
     int prev,next;
@@ -134,6 +148,7 @@ float Tri_Segment::getAngle(int i){
     return theta*180/PI;
 }
 
+//Gets angle based on an x,y coordinate to a verticle like
 float Tri_Segment::getAngle(ofPoint p1){
     ofPoint vectorOne = midPoint-p1;
     ofPoint vectorTwo = midPoint - ofPoint(midPoint.x,midPoint.y-300,0);
@@ -167,72 +182,54 @@ vector<int> Tri_Segment::getFirstVertexPos(vector<float> _otherAngles){
     return firstVertexPos;
 }
 
+//Finds the top-left most and bottom-right most points of the triangle to allocate space to the ofImage object (img)
 //Resizes the ofImage object to the size of the triangle segment
-void Tri_Segment::resizeImage(ofImage& _mainImg){
+//Creates the image for the triangle segment from the main image
+void Tri_Segment::createImage(ofImage& _mainImg){
     //Set top left and bottom right ofPoints to values they are at their max
     topLeft = ofPoint(99999,99999,0);
     bottomRight = ofPoint(0,0,0);
     
     //Go through all vertices and find the top left most point and the bottom right most point
     for(auto _p: vertices){
-        if(_p.x<topLeft.x){
+        if(_p.x<topLeft.x){ //Left most point
             topLeft.x = _p.x;
         }
-        if(_p.y<topLeft.y){
+        if(_p.y<topLeft.y){ //Top most point
             topLeft.y = _p.y;
         }
         
-        if(_p.x>bottomRight.x){
+        if(_p.x>bottomRight.x){ //Right most point
             bottomRight.x = _p.x;
         }
-        if(_p.y>bottomRight.y){
+        if(_p.y>bottomRight.y){ //Bottom most point
             bottomRight.y = _p.y;
         }
     }
     
-    
+    //Add points to the triangulation ofxDelaunay object
     for(auto _v: vertices){
-        triangulation.addPoint(_v-topLeft);
-//        cout<<"TopLEFT: "<<_v-topLeft<<endl;
+        triangulation.addPoint(_v-topLeft); //Add each vertex minus the topLeft of the image for easy comparison
     }
-    //    triangulation.addPoints(vertices);
-    triangulation.triangulate();
-    
+    triangulation.triangulate(); //Create triangle for triangulation
     
     
     //Set image to the width and height of the triangle
     img.allocate(bottomRight.x-topLeft.x, bottomRight.y-topLeft.y, OF_IMAGE_COLOR_ALPHA);
     for(int i=0; i<img.getWidth(); i++){
         for(int j=0; j<img.getHeight(); j++){
-            ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(i,j));
-            vector<ofPoint> _points = triangulation.getPointsForITriangle(tri);
-//            cout<<_points[0]<<" "<<_points[1]<<" "<<_points[2]<<endl;
-//            cout<<tri.p1<<" "<<tri.p2<<" "<<tri.p3<<endl;
             
+            //Find an ITRANGLE for the x,y position in the img
+            ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(i,j));
+            
+            //If there is a triangle
             if(tri.p1!=0 || tri.p2!=0 || tri.p3!=0){
-                img.setColor(i,j,_mainImg.getColor(i+topLeft.x, j+topLeft.y));
-//                cout<<i<<" "<<j<<" Check!!"<<endl;
+                img.setColor(i,j,_mainImg.getColor(i+topLeft.x, j+topLeft.y)); //Sets the pixel colour to the colour of the image at the segments position
             }
-            else{
-                img.setColor(i, j, ofColor(255,255,255,0));
-//                cout<<i<<" "<<j<<" NOPE!!"<<endl;
+            else{ //If not
+                img.setColor(i, j, ofColor(255,255,255,0)); //Set colour to black with 0% opacity
             }
         }
     }
-    img.update();
-}
-
-
-void Tri_Segment::createImage(ofImage& _img){
-    
-//            cout<<_img.getColor(i,j)<<endl;
-//            ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(i,j));
-//            if(tri.p1!=0 && tri.p2!=0 && tri.p3!=0){
-//            j*img.getWidth()+i
-            
-//            }
-//            else{
-//                img.setColor(i,j,ofColor(0,0,0));
-//            }
-    
+    img.update(); //Update the image pixel array
 }

@@ -11,14 +11,18 @@ void ofApp::setup(){
     ofEnableSmoothing();
     ofBackground(0);
     
-    mainImg.load("long.jpg");
-    //    for (int i=0; i<300; i++)
-    //    {
-    //        float x = ofRandom(ofGetWidth());
-    //        float y = ofRandom(ofGetHeight());
-    //        ofPoint randomPoint(x, y);
-    //        triangulation.addPoint(randomPoint);
-    //    }
+    mainImg.load("Navona_House.jpg");
+        for (int i=0; i<100; i++)
+        {
+            float x = ofRandom(mainImg.getWidth());
+            float y = ofRandom(mainImg.getHeight());
+            ofPoint randomPoint(x, y);
+            triangulation.addPoint(randomPoint);
+        }
+    triangulation.triangulate();
+    rotBool = false;
+    scaBool = false;
+    picBool = true;
 }
 
 //--------------------------------------------------------------
@@ -28,8 +32,9 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    if(picBool)
+        mainImg.draw(0,0);
     if(!done){
-        mainImg.draw(0, 0);
         for(int i=0; i<triangulation.getNumTriangles(); i++){
             vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
             ofPushStyle();
@@ -41,9 +46,38 @@ void ofApp::draw(){
         }
     }
     else{
-        for(int i=0; i<segs.size(); i++){
-            segs.at(i).img.draw(segs.at(i).topLeft);
-//            ofDrawBitmapString(_seg.img.getColor(mouseX, mouseY), mouseX, mouseY);
+//        for(int i=0; i<segs.size(); i++){
+        for(auto _seg: segs){
+            if(_seg.otherSeg!=nullptr){
+                ofPushMatrix();
+//                ofTranslate(200,200);
+                ofTranslate(50+_seg.topLeft.x+_seg.midPoint.x, 50+_seg.topLeft.y+_seg.midPoint.y);
+//                    ofTranslate(50+_seg.otherSeg->topLeft.x, 50+_seg.otherSeg->topLeft.y);
+                if(rotBool)
+                    ofRotate(_seg.getRotation());
+                if(scaBool)
+                    ofScale(_seg.flipped*_seg.scale,_seg.scale,1);
+//                    ofRotate(ofMap(mouseX, 0, ofGetWidth(), 0, 360));
+                
+                cout<<"Flipped: "<<_seg.flipped<<" Scaled: "<<_seg.scale<<" Rotation: "<<_seg.getRotation()<<endl;
+                _seg.img.draw(-_seg.midPoint.x,-_seg.midPoint.y);
+//                _seg.img.draw(0, 0);
+//                    _seg.img.draw(_seg.topLeft.x-_seg.midPoint.x,_seg.topLeft.y-_seg.midPoint.y);
+                
+                ofPopMatrix();
+//                break;
+                
+                /*
+                ofPushMatrix();
+                
+                ofTranslate(_seg.otherSeg->topLeft.x+_seg.otherSeg->midPoint.x, _seg.otherSeg->topLeft.y+_seg.otherSeg->midPoint.y);
+                _seg.otherSeg->img.draw(0,0);
+//                _seg.otherSeg->img.draw(-_seg.otherSeg->midPoint.x,-_seg.otherSeg->midPoint.y);
+//                    _seg.otherSeg->img.draw(-_seg.otherSeg->midPoint.x,-_seg.otherSeg->midPoint.y);
+                ofPopMatrix();
+//                break;
+                 */
+            }
         }
     }
     
@@ -55,21 +89,16 @@ void ofApp::draw(){
         ofPopStyle();
     }
     
-    
-//    ofDrawBitmapString("'r' to reset", ofPoint(10,20));
     ofDrawBitmapString(to_string(triangulation.getNumTriangles()), ofPoint(10,40));
-//
     
-//
-//    for(auto _seg: segs){
-//        ofPushStyle();
-//            ofSetColor(_seg.col);
-////        ofPoint mid = _seg.getMidPos();
-//            font->drawString(to_string(_seg.midPoint.x)+" "+to_string(_seg.midPoint.y),_seg.midPoint.x,_seg.midPoint.y);
-//            ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10, 10);
-////            cout<<"Seg: "<<mid<<endl;
-//        ofPopStyle();
-//    }
+    ofPushStyle();
+    ofSetColor(0);
+    ofDrawRectangle(0, 0, ofGetWidth(), 50);
+    ofDrawRectangle(0, 0, 50, ofGetHeight());
+    ofDrawRectangle(0, ofGetHeight(), ofGetWidth(), -50);
+    ofDrawRectangle(ofGetWidth(), ofGetHeight(), -50, -ofGetHeight());
+    ofPopStyle();
+    
 }
 
 //--------------------------------------------------------------
@@ -115,10 +144,21 @@ void ofApp::keyPressed(int key){
 //            _s.createImage(mainImg);
 //        }
         done=true;
+        rotBool = false;
+        scaBool = false;
     }
     
     if(key=='b'){
-        done=false;
+        done=!done;
+    }
+    if(key=='v'){
+        rotBool=!rotBool;
+    }
+    if(key=='c'){
+        scaBool=!scaBool;
+    }
+    if(key=='x'){
+        picBool=!picBool;
     }
 }
 

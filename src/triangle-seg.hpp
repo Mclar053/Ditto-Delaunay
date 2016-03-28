@@ -17,9 +17,11 @@ class Tri_Segment{
     vector<ofPoint> vertices;
     vector<float> angles;
     ofxDelaunay triangulation;
+    float rotation;
     
     bool compareAngles(Tri_Segment& _other);
     float getRotationToOther(Tri_Segment& _other);
+    float getScaleToOther(Tri_Segment& _other);
     
     vector<int> getFirstVertexPos(vector<float> _otherAngles);
     ofPoint getMidPos();
@@ -36,20 +38,26 @@ public:
     ofImage img;
     Tri_Segment* otherSeg;
     ofPoint topLeft, bottomRight;
+    int flipped;
+    float scale;
     
     void compare(Tri_Segment& _other);
     float getAngle(int i);
     float getAngle(ofPoint p1);
+    bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier);
+    
+    
     void printAngles();
     
     vector<float> getAllAngles(){
         return angles;
     };
-
-    void resizeImage(ofImage& _mainImg);
-    void createImage(ofImage& _img);
     
-    bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier);
+    float getRotation(){
+        return rotation;
+    }
+
+    void createImage(ofImage& _mainImg);
 };
 
 #endif /* segment_hpp */
