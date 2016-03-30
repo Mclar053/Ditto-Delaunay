@@ -36,6 +36,7 @@ void Tri_Segment::printAngles(){
 //    }
     cout<<"-----------"<<endl;
 }
+
 //Compares 2 triangle segements
 //Takes Another triangle segment as argument
 void Tri_Segment::compare(Tri_Segment& _other){
@@ -79,13 +80,13 @@ bool Tri_Segment::compareAngles(Tri_Segment& _other){
         //3/-
         for(int _vertex : firstVertexPos){
             if(checkAnglePos(angles, otherAngles, _vertex,1)){
-//                flipped = 1;
+                flipped = 1;
                 return true;
             }
-            if(checkAnglePos(angles, otherAngles, _vertex,-1)){
-                flipped = -1;
-                return true;
-            }
+//            if(checkAnglePos(angles, otherAngles, _vertex,-1)){
+//                flipped = -1;
+//                return true;
+//            }
         }
         return false;
 }
@@ -94,6 +95,7 @@ bool Tri_Segment::compareAngles(Tri_Segment& _other){
 //Returns true if all angles are within 3 degrees of each other
 //Returns false if any angles are over 3 degrees of each other
 bool Tri_Segment::checkAnglePos(vector<float> _angles, vector<float> _otherAngles, int _firstPos, int _multiplier){
+    
     int nextPos;
     for(int i=1; i<angles.size(); i++){
         nextPos = (_firstPos+(i*_multiplier))%-(_otherAngles.size());
@@ -114,13 +116,16 @@ float Tri_Segment::getRotationToOther(Tri_Segment& _other){
 //        thetaOne=-thetaOne;
 //    }
     
-    return thetaTwo-thetaOne;
+    
+    float thetaThree = 360 - thetaOne + thetaTwo;
+    cout<<"ThetaOne: "<<thetaOne<<" ThetaTwo: "<<thetaTwo<<" ThetaThree: "<<thetaThree<<endl;
+    return thetaThree;
 }
 
 float Tri_Segment::getScaleToOther(Tri_Segment& _other){
     vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
-    ofPoint vectorOne = ofPoint(abs(midPoint.x-vertices.at(0).x),abs(midPoint.y-vertices.at(0).y));
-    ofPoint vectorTwo = ofPoint(abs(midPoint.x-_other.vertices.at(vertexPositions.at(0)).x),abs(midPoint.y-_other.vertices.at(vertexPositions.at(0)).y));
+    ofPoint vectorOne = ofPoint(abs(vertices.at(0).x-vertices.at(1).x),abs(vertices.at(0).y-vertices.at(1).y));
+    ofPoint vectorTwo = ofPoint(abs(_other.vertices.at(vertexPositions.at(0)).x-_other.vertices.at(vertexPositions.at(0)+1%3).x),abs(_other.vertices.at(vertexPositions.at(0)).y-_other.vertices.at(vertexPositions.at(0)+1%3).y));
     
     cout<<"V1: "<<vectorOne<<" Mag: "<<vectorOne.length()<<"V2: "<<vectorTwo<<" Mag: "<<vectorTwo.length()<<"V1/V2: "<<vectorOne/vectorTwo<<" -- "<<vectorTwo.length()/vectorOne.length()<<endl;
     
@@ -137,8 +142,8 @@ float Tri_Segment::getAngle(int i){
     else next=i+1;
     
     //Creates mathematical vectors between the vertex
-    ofPoint vectorOne = vertices[i]-vertices[prev];
-    ofPoint vectorTwo = vertices[i]-vertices[next];
+    ofPoint vectorOne = vertices[prev]-vertices[i];
+    ofPoint vectorTwo = vertices[next]-vertices[i];
     
     
     //Calculates angle between the two mathematical vectors
@@ -150,10 +155,13 @@ float Tri_Segment::getAngle(int i){
 
 //Gets angle based on an x,y coordinate to a verticle like
 float Tri_Segment::getAngle(ofPoint p1){
-    ofPoint vectorOne = midPoint-p1;
-    ofPoint vectorTwo = midPoint - ofPoint(midPoint.x,midPoint.y-300,0);
+    ofPoint vectorOne = p1-midPoint;
+    ofPoint vectorTwo = ofPoint(midPoint.x,midPoint.y-300,0)- midPoint;
     
     float theta = acos((vectorOne.x*vectorTwo.x+vectorOne.y*vectorTwo.y)/(vectorOne.length()*vectorTwo.length()));
+    
+    cout<<"Theta Angle: "<<theta<<endl;
+    if(theta<0) theta = 360+theta;
     
     return theta*180/PI;
 }
@@ -176,7 +184,7 @@ ofPoint Tri_Segment::getMidPos(){
 vector<int> Tri_Segment::getFirstVertexPos(vector<float> _otherAngles){
     vector<int> firstVertexPos;
     for(int i=0; i<_otherAngles.size(); i++){
-        if(abs(angles[0]-_otherAngles[i])<=3)
+        if(abs(angles[0]-_otherAngles[i])<=1)
             firstVertexPos.push_back(i);
     }
     return firstVertexPos;

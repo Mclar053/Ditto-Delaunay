@@ -23,6 +23,7 @@ public:
     ofImage mainImg;
     
     ofTrueTypeFont* font;
+    int num;
     
     bool done,rotBool,scaBool, picBool;
 };

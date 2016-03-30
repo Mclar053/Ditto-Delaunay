@@ -23,7 +23,7 @@ class Tri_Segment{
     float getRotationToOther(Tri_Segment& _other);
     float getScaleToOther(Tri_Segment& _other);
     
-    vector<int> getFirstVertexPos(vector<float> _otherAngles);
+    
     ofPoint getMidPos();
     
     
@@ -52,6 +52,12 @@ public:
     vector<float> getAllAngles(){
         return angles;
     };
+    
+    vector<ofPoint> getAllVertices(){
+        return vertices;
+    }
+    
+    vector<int> getFirstVertexPos(vector<float> _otherAngles);
     
     float getRotation(){
         return rotation;

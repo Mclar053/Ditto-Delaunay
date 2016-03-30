@@ -23,6 +23,7 @@ void ofApp::setup(){
     rotBool = false;
     scaBool = false;
     picBool = true;
+    num = 0;
 }
 
 //--------------------------------------------------------------
@@ -47,57 +48,95 @@ void ofApp::draw(){
     }
     else{
 //        for(int i=0; i<segs.size(); i++){
-        for(auto _seg: segs){
+//        for(auto _seg: segs){
+            Tri_Segment& _seg = segs.at(num);
             if(_seg.otherSeg!=nullptr){
+                
+                //Main Segment
                 ofPushMatrix();
-//                ofTranslate(200,200);
-                ofTranslate(50+_seg.topLeft.x+_seg.midPoint.x, 50+_seg.topLeft.y+_seg.midPoint.y);
-//                    ofTranslate(50+_seg.otherSeg->topLeft.x, 50+_seg.otherSeg->topLeft.y);
+                ofTranslate(_seg.midPoint.x, _seg.midPoint.y);
+                
                 if(rotBool)
                     ofRotate(_seg.getRotation());
+                
                 if(scaBool)
                     ofScale(_seg.flipped*_seg.scale,_seg.scale,1);
-//                    ofRotate(ofMap(mouseX, 0, ofGetWidth(), 0, 360));
                 
                 cout<<"Flipped: "<<_seg.flipped<<" Scaled: "<<_seg.scale<<" Rotation: "<<_seg.getRotation()<<endl;
-                _seg.img.draw(-_seg.midPoint.x,-_seg.midPoint.y);
-//                _seg.img.draw(0, 0);
-//                    _seg.img.draw(_seg.topLeft.x-_seg.midPoint.x,_seg.topLeft.y-_seg.midPoint.y);
+                _seg.img.draw(_seg.topLeft.x-_seg.midPoint.x,_seg.topLeft.y-_seg.midPoint.y);
                 
                 ofPopMatrix();
-//                break;
                 
-                /*
+                //Other Segment
                 ofPushMatrix();
                 
-                ofTranslate(_seg.otherSeg->topLeft.x+_seg.otherSeg->midPoint.x, _seg.otherSeg->topLeft.y+_seg.otherSeg->midPoint.y);
-                _seg.otherSeg->img.draw(0,0);
-//                _seg.otherSeg->img.draw(-_seg.otherSeg->midPoint.x,-_seg.otherSeg->midPoint.y);
-//                    _seg.otherSeg->img.draw(-_seg.otherSeg->midPoint.x,-_seg.otherSeg->midPoint.y);
+                ofTranslate(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y);
+                
+                _seg.otherSeg->img.draw(_seg.otherSeg->topLeft.x-_seg.otherSeg->midPoint.x,_seg.otherSeg->topLeft.y-_seg.otherSeg->midPoint.y);
+                
                 ofPopMatrix();
+                
+                
+                
+                ofDrawLine(_seg.midPoint.x, _seg.midPoint.y, _seg.midPoint.x, _seg.midPoint.y-300);
+                
+                ofDrawLine(_seg.midPoint.x, _seg.midPoint.y, _seg.getAllVertices().at(0).x, _seg.getAllVertices().at(0).y);
+                
+                
+                
+                //Draw + midpoint
+                //Other
+                ofPushStyle();
+                    ofSetColor(255, 0, 0);
+                    ofDrawEllipse(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y,10,10);
+                ofPopStyle();
+                
+                ofPushStyle();
+                    ofSetColor(0, 255, 0);
+                    ofDrawEllipse(_seg.otherSeg->topLeft.x, _seg.otherSeg->topLeft.y,10,10);
+                ofPopStyle();
+                
+                //Main
+                ofPushStyle();
+                    ofSetColor(0, 255, 255);
+                    ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10,10);
+                ofPopStyle();
+                
+                ofPushStyle();
+                    ofSetColor(0, 0, 255);
+                    ofDrawEllipse(_seg.topLeft.x, _seg.topLeft.y, 10,10);
+                ofPopStyle();
+                
+                
+                ofPushStyle();
+                ofSetColor(255, 255, 0);
+                ofDrawLine(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y, _seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y-300);
+                ofDrawLine(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y, _seg.otherSeg->getAllVertices().at(_seg.getFirstVertexPos(_seg.otherSeg->getAllAngles()).at(0)).x, _seg.otherSeg->getAllVertices().at(_seg.getFirstVertexPos(_seg.otherSeg->getAllAngles()).at(0)).y);
+                ofPopStyle();
 //                break;
-                 */
+                
             }
-        }
+//        }
     }
     
-    for(auto _seg: segs){
-        ofPushStyle();
-        ofSetColor(_seg.col);
-        //                    font->drawString(to_string(_seg.midPoint.x)+" "+to_string(_seg.midPoint.y),_seg.midPoint.x,_seg.midPoint.y);
-        ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10, 10);
-        ofPopStyle();
-    }
+    //Draw Midpoints
+//    for(auto _seg: segs){
+//        ofPushStyle();
+//        ofSetColor(_seg.col);
+//        //                    font->drawString(to_string(_seg.midPoint.x)+" "+to_string(_seg.midPoint.y),_seg.midPoint.x,_seg.midPoint.y);
+//        ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10, 10);
+//        ofPopStyle();
+//    }
     
     ofDrawBitmapString(to_string(triangulation.getNumTriangles()), ofPoint(10,40));
     
-    ofPushStyle();
-    ofSetColor(0);
-    ofDrawRectangle(0, 0, ofGetWidth(), 50);
-    ofDrawRectangle(0, 0, 50, ofGetHeight());
-    ofDrawRectangle(0, ofGetHeight(), ofGetWidth(), -50);
-    ofDrawRectangle(ofGetWidth(), ofGetHeight(), -50, -ofGetHeight());
-    ofPopStyle();
+//    ofPushStyle();
+//    ofSetColor(0);
+//    ofDrawRectangle(0, 0, ofGetWidth(), 50);
+//    ofDrawRectangle(0, 0, 50, ofGetHeight());
+//    ofDrawRectangle(0, ofGetHeight(), ofGetWidth(), -50);
+//    ofDrawRectangle(ofGetWidth(), ofGetHeight(), -50, -ofGetHeight());
+//    ofPopStyle();
     
 }
 
@@ -159,6 +198,12 @@ void ofApp::keyPressed(int key){
     }
     if(key=='x'){
         picBool=!picBool;
+    }
+    if(key=='-'){
+        num--;
+    }
+    if(key=='='){
+        num++;
     }
 }
 
