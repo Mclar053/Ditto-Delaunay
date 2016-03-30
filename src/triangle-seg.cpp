@@ -161,7 +161,7 @@ float Tri_Segment::getAngle(ofPoint p1){
     float theta = acos((vectorOne.x*vectorTwo.x+vectorOne.y*vectorTwo.y)/(vectorOne.length()*vectorTwo.length()));
     
     cout<<"Theta Angle: "<<theta<<endl;
-    if(theta<0) theta = 360+theta;
+    if((vectorOne.x<0 && vectorOne.y<0) || (vectorOne.x<0 && vectorOne.y>0)) theta = -theta;
     
     return theta*180/PI;
 }
