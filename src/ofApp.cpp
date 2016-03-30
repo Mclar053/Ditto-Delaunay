@@ -5,25 +5,62 @@ using namespace cv;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
     done = false;
     font = new ofTrueTypeFont();
     font->load(OF_TTF_SANS, 10);
     ofEnableSmoothing();
     ofBackground(0);
     
-    mainImg.load("Navona_House.jpg");
-        for (int i=0; i<100; i++)
-        {
-            float x = ofRandom(mainImg.getWidth());
-            float y = ofRandom(mainImg.getHeight());
-            ofPoint randomPoint(x, y);
-            triangulation.addPoint(randomPoint);
-        }
-    triangulation.triangulate();
+    mainImg.load("long.jpg");
+//        for (int i=0; i<100; i++)
+//        {
+//            float x = ofRandom(mainImg.getWidth());
+//            float y = ofRandom(mainImg.getHeight());
+//            ofPoint randomPoint(x, y);
+//            triangulation.addPoint(randomPoint);
+//        }
+//    triangulation.triangulate();
     rotBool = false;
     scaBool = false;
     picBool = true;
     num = 0;
+    
+    
+    int thresh = 140;
+    int max_thresh = 255;
+
+    
+    src = toCv(mainImg);
+    cvtColor( src, src_gray, CV_BGR2GRAY );
+    
+    Mat dst, dst_norm, dst_norm_scaled;
+    dst = Mat::zeros( src.size(), CV_32FC1 );
+    
+    /// Detector parameters
+    int blockSize = 2;
+    int apertureSize = 3;
+    double k = 0.04;
+    
+    /// Detecting corners
+    cornerHarris( src_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
+    
+    /// Normalizing
+    normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
+    convertScaleAbs( dst_norm, dst_norm_scaled );
+    
+    /// Drawing a circle around corners
+    for( int j = 0; j < dst_norm.rows ; j++ )
+    { for( int i = 0; i < dst_norm.cols; i++ )
+    {
+        if( (int) dst_norm.at<float>(j,i) > thresh )
+        {
+            ofPoint randomPoint(i, j);
+            triangulation.addPoint(randomPoint);
+        }
+    }
+    }
+    triangulation.triangulate();
 }
 
 //--------------------------------------------------------------
@@ -47,6 +84,30 @@ void ofApp::draw(){
         }
     }
     else{
+        
+        for(auto _seg: segs){
+            if(_seg.otherSeg!=nullptr){
+                //Main Segment
+                ofPushMatrix();
+                ofTranslate(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y);
+                
+//                if(rotBool)
+                    ofRotate(_seg.getRotation());
+                
+//                if(scaBool)
+                    ofScale(_seg.flipped*_seg.scale,_seg.scale,1);
+                
+//                cout<<"Flipped: "<<_seg.flipped<<" Scaled: "<<_seg.scale<<" Rotation: "<<_seg.getRotation()<<endl;
+                
+                _seg.img.draw(_seg.otherSeg->topLeft.x-_seg.otherSeg->midPoint.x,_seg.otherSeg->topLeft.y-_seg.otherSeg->midPoint.y);
+                
+                ofPopMatrix();
+            }
+        }
+        
+        //Testing
+        
+        /*
 //        for(int i=0; i<segs.size(); i++){
 //        for(auto _seg: segs){
             Tri_Segment& _seg = segs.at(num);
@@ -116,6 +177,7 @@ void ofApp::draw(){
 //                break;
                 
             }
+        */
 //        }
     }
     
@@ -153,9 +215,9 @@ void ofApp::keyPressed(int key){
             points.clear();
             points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
             for(auto _p: points)
-                cout<<_p<<endl;
+//                cout<<_p<<endl;
             segs.push_back(Tri_Segment(points,mainImg));
-            segs.at(i).printAngles();
+//            segs.at(i).printAngles();
         }
         
     }
@@ -170,12 +232,12 @@ void ofApp::keyPressed(int key){
         
         for(auto _s : segs){
             if(_s.otherSeg!=nullptr){
-                cout<<_s.midPoint<<" -- "<<_s.otherSeg->midPoint<<endl;
+//                cout<<_s.midPoint<<" -- "<<_s.otherSeg->midPoint<<endl;
                 _s.printAngles();
-                _s.otherSeg->printAngles();
+//                _s.otherSeg->printAngles();
             }
         }
-        cout<<num<<endl;
+//        cout<<num<<endl;
     }
     
     if(key=='n'){

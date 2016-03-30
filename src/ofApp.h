@@ -21,6 +21,7 @@ public:
     vector<Tri_Segment> segs;
     
     ofImage mainImg;
+    Mat src, src_gray;
     
     ofTrueTypeFont* font;
     int num;

@@ -55,12 +55,12 @@ void Tri_Segment::compare(Tri_Segment& _other){
         compared = true;
         _other.compared = true;
         
-        cout<<"Rotation: "<<getRotationToOther(_other)<<endl;
+//        cout<<"Rotation: "<<getRotationToOther(_other)<<endl;
         rotation = getRotationToOther(_other);
         scale = getScaleToOther(_other);
         cout<<"Match"<<endl;
     } else{
-        cout<<"No Match"<<endl;
+//        cout<<"No Match"<<endl;
     }
     
 }
@@ -83,10 +83,10 @@ bool Tri_Segment::compareAngles(Tri_Segment& _other){
                 flipped = 1;
                 return true;
             }
-//            if(checkAnglePos(angles, otherAngles, _vertex,-1)){
-//                flipped = -1;
-//                return true;
-//            }
+            if(checkAnglePos(angles, otherAngles, _vertex,-1)){
+                flipped = -1;
+                return true;
+            }
         }
         return false;
 }
@@ -125,7 +125,7 @@ float Tri_Segment::getRotationToOther(Tri_Segment& _other){
 float Tri_Segment::getScaleToOther(Tri_Segment& _other){
     vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
     ofPoint vectorOne = ofPoint(abs(vertices.at(0).x-vertices.at(1).x),abs(vertices.at(0).y-vertices.at(1).y));
-    ofPoint vectorTwo = ofPoint(abs(_other.vertices.at(vertexPositions.at(0)).x-_other.vertices.at(vertexPositions.at(0)+1%3).x),abs(_other.vertices.at(vertexPositions.at(0)).y-_other.vertices.at(vertexPositions.at(0)+1%3).y));
+    ofPoint vectorTwo = ofPoint(abs(_other.vertices.at(vertexPositions.at(0)).x-_other.vertices.at((vertexPositions.at(0)+1)%3).x),abs(_other.vertices.at(vertexPositions.at(0)).y-_other.vertices.at((vertexPositions.at(0)+1)%3).y));
     
     cout<<"V1: "<<vectorOne<<" Mag: "<<vectorOne.length()<<"V2: "<<vectorTwo<<" Mag: "<<vectorTwo.length()<<"V1/V2: "<<vectorOne/vectorTwo<<" -- "<<vectorTwo.length()/vectorOne.length()<<endl;
     
@@ -159,8 +159,7 @@ float Tri_Segment::getAngle(ofPoint p1){
     ofPoint vectorTwo = ofPoint(midPoint.x,midPoint.y-300,0)- midPoint;
     
     float theta = acos((vectorOne.x*vectorTwo.x+vectorOne.y*vectorTwo.y)/(vectorOne.length()*vectorTwo.length()));
-    
-    cout<<"Theta Angle: "<<theta<<endl;
+
     if((vectorOne.x<0 && vectorOne.y<0) || (vectorOne.x<0 && vectorOne.y>0)) theta = -theta;
     
     return theta*180/PI;
