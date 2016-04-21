@@ -21,22 +21,6 @@ Tri_Segment::Tri_Segment(vector<ofPoint> _corners, ofImage& _mainImg): compared(
     createImage(_mainImg);
 }
 
-void Tri_Segment::printAngles(){
-    cout<<"Triangle angles: ";
-    cout<<angles[0]<<" "<<angles[1]<<" "<<angles[2]<<endl;
-    cout<<"1: "<<vertices[0]<<" 2: "<<vertices[1]<<" 3: "<<vertices[2]<<endl;
-//    cout<<angles[0]+angles[1]+angles[2]<<endl;
-    /*if(otherSeg!=nullptr){
-        cout<<"Other Triangle angles: ";
-        cout<<otherSeg->angles[0]<<" "<<otherSeg->angles[1]<<" "<<otherSeg->angles[2]<<endl;
-        cout<<"1: "<<otherSeg->vertices[0]<<" 2: "<<otherSeg->vertices[1]<<" 3: "<<otherSeg->vertices[2]<<endl;
-    }*/
-//    for(int i=0; i<angles.size(); i++){
-//        cout<<"Angle "<<i<<": "<<angles.at(i)<<" -- ";
-//    }
-    cout<<"-----------"<<endl;
-}
-
 //Compares 2 triangle segements
 //Takes Another triangle segment as argument
 void Tri_Segment::compare(Tri_Segment& _other){
@@ -55,10 +39,8 @@ void Tri_Segment::compare(Tri_Segment& _other){
         compared = true;
         _other.compared = true;
         
-//        cout<<"Rotation: "<<getRotationToOther(_other)<<endl;
         rotation = getRotationToOther(_other);
         scale = getScaleToOther(_other);
-        cout<<"Match"<<endl;
     } else{
 //        cout<<"No Match"<<endl;
     }
@@ -112,13 +94,7 @@ float Tri_Segment::getRotationToOther(Tri_Segment& _other){
     float thetaOne = getAngle(vertices.at(0));
     float thetaTwo = _other.getAngle(_other.vertices.at(vertexPositions.at(0)));
     
-//    if(flipped==-1){
-//        thetaOne=-thetaOne;
-//    }
-    
-    
     float thetaThree = 360 - thetaOne + thetaTwo;
-    cout<<"ThetaOne: "<<thetaOne<<" ThetaTwo: "<<thetaTwo<<" ThetaThree: "<<thetaThree<<endl;
     return thetaThree;
 }
 
@@ -126,8 +102,6 @@ float Tri_Segment::getScaleToOther(Tri_Segment& _other){
     vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
     ofPoint vectorOne = ofPoint(abs(vertices.at(0).x-vertices.at(1).x),abs(vertices.at(0).y-vertices.at(1).y));
     ofPoint vectorTwo = ofPoint(abs(_other.vertices.at(vertexPositions.at(0)).x-_other.vertices.at((vertexPositions.at(0)+1)%3).x),abs(_other.vertices.at(vertexPositions.at(0)).y-_other.vertices.at((vertexPositions.at(0)+1)%3).y));
-    
-    cout<<"V1: "<<vectorOne<<" Mag: "<<vectorOne.length()<<"V2: "<<vectorTwo<<" Mag: "<<vectorTwo.length()<<"V1/V2: "<<vectorOne/vectorTwo<<" -- "<<vectorTwo.length()/vectorOne.length()<<endl;
     
     return vectorTwo.length()/vectorOne.length();
 }

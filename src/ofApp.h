@@ -24,7 +24,7 @@ public:
     Mat src, src_gray;
     
     ofTrueTypeFont* font;
-    int num;
     
-    bool done,rotBool,scaBool, picBool;
+    bool done;
+    bool doSaveScreen = false;
 };

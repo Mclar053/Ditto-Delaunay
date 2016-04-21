@@ -47,8 +47,6 @@ public:
     bool checkAnglePos(vector<float> angles, vector<float> otherAngles, int firstPos, int multiplier);
     
     
-    void printAngles();
-    
     vector<float> getAllAngles(){
         return angles;
     };

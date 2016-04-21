@@ -12,22 +12,24 @@ void ofApp::setup(){
     ofEnableSmoothing();
     ofBackground(0);
     
-    mainImg.load("long.jpg");
-//        for (int i=0; i<100; i++)
-//        {
-//            float x = ofRandom(mainImg.getWidth());
-//            float y = ofRandom(mainImg.getHeight());
-//            ofPoint randomPoint(x, y);
-//            triangulation.addPoint(randomPoint);
-//        }
-//    triangulation.triangulate();
-    rotBool = false;
-    scaBool = false;
-    picBool = true;
-    num = 0;
+    mainImg.load("tudor_house.jpg");
+    
+    float resizeX, resizeY;
+    resizeX = (ofGetWidth()-200)/mainImg.getWidth();
+    resizeY = (ofGetHeight()-200/mainImg.getHeight());
+    
+    float resizeScale;
+    if(resizeX<resizeY){
+        resizeScale = resizeX;
+    } else{
+        resizeScale = resizeY;
+    }
+    
+    mainImg.resize(mainImg.getWidth()*resizeScale, mainImg.getHeight()*resizeScale);
+
     
     
-    int thresh = 140;
+    int thresh = 130; //CHANGE THIS VALUE FOR MORE/LESS SEGMENTS
     int max_thresh = 255;
 
     
@@ -61,17 +63,35 @@ void ofApp::setup(){
     }
     }
     triangulation.triangulate();
+    cout<<"done triangulation"<<endl;
+    
+    segs.clear();
+    vector<ofPoint> points;
+    for(int i=0; i<triangulation.getNumTriangles(); i++){
+        points.clear();
+        points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
+        for(auto _p: points)
+            segs.push_back(Tri_Segment(points,mainImg));
+    }
+    cout<<"done segmentation"<<endl;
+    
+    for(int i=0; i<segs.size(); i++){
+        for(int j=i+1; j<segs.size(); j++){
+            segs.at(i).compare(segs.at(j));
+        }
+    }
+    cout<<"done comparision"<<endl;
+    
+    done=true;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    if(picBool)
-        mainImg.draw(0,0);
+    //Check if the image has been created
     if(!done){
         for(int i=0; i<triangulation.getNumTriangles(); i++){
             vector<ofPoint> points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
@@ -85,188 +105,29 @@ void ofApp::draw(){
     }
     else{
         
+        //Loops through all segments
         for(auto _seg: segs){
+            //Check if the segment has a match
             if(_seg.otherSeg!=nullptr){
-                //Main Segment
+                
                 ofPushMatrix();
-                ofTranslate(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y);
-                
-//                if(rotBool)
+                    ofTranslate(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y);
                     ofRotate(_seg.getRotation());
-                
-//                if(scaBool)
                     ofScale(_seg.flipped*_seg.scale,_seg.scale,1);
-                
-//                cout<<"Flipped: "<<_seg.flipped<<" Scaled: "<<_seg.scale<<" Rotation: "<<_seg.getRotation()<<endl;
-                
-                _seg.img.draw(_seg.otherSeg->topLeft.x-_seg.otherSeg->midPoint.x,_seg.otherSeg->topLeft.y-_seg.otherSeg->midPoint.y);
-                
+                    _seg.img.draw(_seg.otherSeg->topLeft.x-_seg.otherSeg->midPoint.x,_seg.otherSeg->topLeft.y-_seg.otherSeg->midPoint.y);
                 ofPopMatrix();
             }
         }
-        
-        //Testing
-        
-        /*
-//        for(int i=0; i<segs.size(); i++){
-//        for(auto _seg: segs){
-            Tri_Segment& _seg = segs.at(num);
-            if(_seg.otherSeg!=nullptr){
-                
-                //Main Segment
-                ofPushMatrix();
-                ofTranslate(_seg.midPoint.x, _seg.midPoint.y);
-                
-                if(rotBool)
-                    ofRotate(_seg.getRotation());
-                
-                if(scaBool)
-                    ofScale(_seg.flipped*_seg.scale,_seg.scale,1);
-                
-                cout<<"Flipped: "<<_seg.flipped<<" Scaled: "<<_seg.scale<<" Rotation: "<<_seg.getRotation()<<endl;
-                _seg.img.draw(_seg.topLeft.x-_seg.midPoint.x,_seg.topLeft.y-_seg.midPoint.y);
-                
-                ofPopMatrix();
-                
-                //Other Segment
-                ofPushMatrix();
-                
-                ofTranslate(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y);
-                
-                _seg.otherSeg->img.draw(_seg.otherSeg->topLeft.x-_seg.otherSeg->midPoint.x,_seg.otherSeg->topLeft.y-_seg.otherSeg->midPoint.y);
-                
-                ofPopMatrix();
-                
-                
-                
-                ofDrawLine(_seg.midPoint.x, _seg.midPoint.y, _seg.midPoint.x, _seg.midPoint.y-300);
-                
-                ofDrawLine(_seg.midPoint.x, _seg.midPoint.y, _seg.getAllVertices().at(0).x, _seg.getAllVertices().at(0).y);
-                
-                
-                
-                //Draw + midpoint
-                //Other
-                ofPushStyle();
-                    ofSetColor(255, 0, 0);
-                    ofDrawEllipse(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y,10,10);
-                ofPopStyle();
-                
-                ofPushStyle();
-                    ofSetColor(0, 255, 0);
-                    ofDrawEllipse(_seg.otherSeg->topLeft.x, _seg.otherSeg->topLeft.y,10,10);
-                ofPopStyle();
-                
-                //Main
-                ofPushStyle();
-                    ofSetColor(0, 255, 255);
-                    ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10,10);
-                ofPopStyle();
-                
-                ofPushStyle();
-                    ofSetColor(0, 0, 255);
-                    ofDrawEllipse(_seg.topLeft.x, _seg.topLeft.y, 10,10);
-                ofPopStyle();
-                
-                
-                ofPushStyle();
-                ofSetColor(255, 255, 0);
-                ofDrawLine(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y, _seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y-300);
-                ofDrawLine(_seg.otherSeg->midPoint.x, _seg.otherSeg->midPoint.y, _seg.otherSeg->getAllVertices().at(_seg.getFirstVertexPos(_seg.otherSeg->getAllAngles()).at(0)).x, _seg.otherSeg->getAllVertices().at(_seg.getFirstVertexPos(_seg.otherSeg->getAllAngles()).at(0)).y);
-                ofPopStyle();
-//                break;
-                
-            }
-        */
-//        }
     }
     
-    //Draw Midpoints
-//    for(auto _seg: segs){
-//        ofPushStyle();
-//        ofSetColor(_seg.col);
-//        //                    font->drawString(to_string(_seg.midPoint.x)+" "+to_string(_seg.midPoint.y),_seg.midPoint.x,_seg.midPoint.y);
-//        ofDrawEllipse(_seg.midPoint.x, _seg.midPoint.y, 10, 10);
-//        ofPopStyle();
-//    }
-    
-    ofDrawBitmapString(to_string(triangulation.getNumTriangles()), ofPoint(10,40));
-    
-//    ofPushStyle();
-//    ofSetColor(0);
-//    ofDrawRectangle(0, 0, ofGetWidth(), 50);
-//    ofDrawRectangle(0, 0, 50, ofGetHeight());
-//    ofDrawRectangle(0, ofGetHeight(), ofGetWidth(), -50);
-//    ofDrawRectangle(ofGetWidth(), ofGetHeight(), -50, -ofGetHeight());
-//    ofPopStyle();
+    //Number of triangle segments
+    //ofDrawBitmapString(to_string(triangulation.getNumTriangles()), ofPoint(10,40));
     
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 'r'){
-        segs.clear();
-        triangulation.reset();
-    }
-    if(key=='l'){
-        segs.clear();
-        vector<ofPoint> points;
-        for(int i=0; i<triangulation.getNumTriangles(); i++){
-            points.clear();
-            points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
-            for(auto _p: points)
-//                cout<<_p<<endl;
-            segs.push_back(Tri_Segment(points,mainImg));
-//            segs.at(i).printAngles();
-        }
-        
-    }
-    if(key=='m'){
-        int num = 0;
-        for(int i=0; i<segs.size(); i++){
-            for(int j=i+1; j<segs.size(); j++){
-                segs.at(i).compare(segs.at(j));
-                num++;
-            }
-        }
-        
-        for(auto _s : segs){
-            if(_s.otherSeg!=nullptr){
-//                cout<<_s.midPoint<<" -- "<<_s.otherSeg->midPoint<<endl;
-                _s.printAngles();
-//                _s.otherSeg->printAngles();
-            }
-        }
-//        cout<<num<<endl;
-    }
     
-    if(key=='n'){
-//        for(auto _s : segs){
-//            _s.createImage(mainImg);
-//        }
-        done=true;
-        rotBool = false;
-        scaBool = false;
-    }
-    
-    if(key=='b'){
-        done=!done;
-    }
-    if(key=='v'){
-        rotBool=!rotBool;
-    }
-    if(key=='c'){
-        scaBool=!scaBool;
-    }
-    if(key=='x'){
-        picBool=!picBool;
-    }
-    if(key=='-'){
-        num--;
-    }
-    if(key=='='){
-        num++;
-    }
 }
 
 //--------------------------------------------------------------
@@ -286,17 +147,5 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    if(button == OF_MOUSE_BUTTON_LEFT){
-        triangulation.addPoint(ofPoint(x,y));
-        triangulation.triangulate();
-    }
-    if(button == OF_MOUSE_BUTTON_RIGHT){
-        cout<<"-----NEW-------"<<endl;
-        ITRIANGLE tri = triangulation.getTriangleForPos(ofPoint(x,y));
-        vector<ofPoint> points = triangulation.getPointsForITriangle(tri);
-        for(auto _p: points){
-            cout<<_p<<endl;
-        }
-        cout<<"------------"<<endl;
-    }
+
 }
