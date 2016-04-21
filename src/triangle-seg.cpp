@@ -98,6 +98,7 @@ float Tri_Segment::getRotationToOther(Tri_Segment& _other){
     return thetaThree;
 }
 
+//Gets scale ratio from the same edge of the shape
 float Tri_Segment::getScaleToOther(Tri_Segment& _other){
     vector<int> vertexPositions = getFirstVertexPos(_other.getAllAngles());
     ofPoint vectorOne = ofPoint(abs(vertices.at(0).x-vertices.at(1).x),abs(vertices.at(0).y-vertices.at(1).y));

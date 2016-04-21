@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "ofxDelaunay.h"
-#include "architecture.h"
 #include "triangle-seg.hpp"
 
 class ofApp : public ofBaseApp {
@@ -21,9 +20,7 @@ public:
     vector<Tri_Segment> segs;
     
     ofImage mainImg;
-    Mat src, src_gray;
-    
-    ofTrueTypeFont* font;
+    cv::Mat src, src_gray;
     
     bool done;
     bool doSaveScreen = false;

@@ -7,32 +7,21 @@ using namespace cv;
 void ofApp::setup(){
     
     done = false;
-    font = new ofTrueTypeFont();
-    font->load(OF_TTF_SANS, 10);
     ofEnableSmoothing();
     ofBackground(0);
     
+    //Load main image
     mainImg.load("tudor_house.jpg");
-    
-    float resizeX, resizeY;
-    resizeX = (ofGetWidth()-200)/mainImg.getWidth();
-    resizeY = (ofGetHeight()-200/mainImg.getHeight());
-    
-    float resizeScale;
-    if(resizeX<resizeY){
-        resizeScale = resizeX;
-    } else{
-        resizeScale = resizeY;
-    }
-    
-    mainImg.resize(mainImg.getWidth()*resizeScale, mainImg.getHeight()*resizeScale);
-
     
     
     int thresh = 130; //CHANGE THIS VALUE FOR MORE/LESS SEGMENTS
     int max_thresh = 255;
 
     
+    /*
+     Open Cv Harris Corner Detetction
+     Reference: http://docs.opencv.org/2.4/doc/tutorials/features2d/trackingmotion/harris_detector/harris_detector.html
+     */
     src = toCv(mainImg);
     cvtColor( src, src_gray, CV_BGR2GRAY );
     
@@ -51,22 +40,28 @@ void ofApp::setup(){
     normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
     convertScaleAbs( dst_norm, dst_norm_scaled );
     
-    /// Drawing a circle around corners
+    /// Adding x y point to triangulation
     for( int j = 0; j < dst_norm.rows ; j++ )
     { for( int i = 0; i < dst_norm.cols; i++ )
     {
         if( (int) dst_norm.at<float>(j,i) > thresh )
         {
-            ofPoint randomPoint(i, j);
-            triangulation.addPoint(randomPoint);
+            ofPoint point(i, j);
+            triangulation.addPoint(point);
         }
     }
     }
+    
+    //Triangulate all corners to triangles
     triangulation.triangulate();
     cout<<"done triangulation"<<endl;
     
+    //Create segments
     segs.clear();
     vector<ofPoint> points;
+    
+    //For each triangle in triangulation object
+    //Clear points, get corners for selected triangle and add points to new triangle segment
     for(int i=0; i<triangulation.getNumTriangles(); i++){
         points.clear();
         points = triangulation.getPointsForITriangle(triangulation.getTriangleAtIndex(i));
@@ -75,6 +70,7 @@ void ofApp::setup(){
     }
     cout<<"done segmentation"<<endl;
     
+    //Compare each segment against each other triangle segment
     for(int i=0; i<segs.size(); i++){
         for(int j=i+1; j<segs.size(); j++){
             segs.at(i).compare(segs.at(j));
