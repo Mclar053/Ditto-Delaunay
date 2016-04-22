@@ -11,10 +11,10 @@ void ofApp::setup(){
     ofBackground(0);
     
     //Load main image
-    mainImg.load("tudor_house.jpg");
+    mainImg.load("long.png"); //CHANGE THIS VALUE TO CHANGE IMAGE
     
     
-    int thresh = 130; //CHANGE THIS VALUE FOR MORE/LESS SEGMENTS
+    int thresh = 80; //CHANGE THIS VALUE FOR MORE/LESS SEGMENTS
     int max_thresh = 255;
 
     
